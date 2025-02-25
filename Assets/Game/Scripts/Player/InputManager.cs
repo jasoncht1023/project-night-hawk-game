@@ -1,0 +1,104 @@
+using System.Collections;
+using UnityEngine;
+
+public class InputManager : MonoBehaviour {
+
+    PlayerControls playerControls;
+
+    AnimatorManager animatorManager;
+
+    PlayerMovement playerMovement;
+
+    public float moveAmount;
+
+    public Vector2 movementInput;
+
+    public float verticalInput;
+    public float horizontalInput;
+
+    private Vector2 cameraInput;
+    public float cameraInputX;
+    public float cameraInputY;
+
+    [Header("Input Button Flag")]
+    public bool sprintInput;
+    public bool fireInput;
+    public bool scopeInput;
+    public bool reloadInput;
+    public bool switchWeaponInput;
+    public bool pauseGameInput;
+    public bool interactInput;
+
+    private void Awake() {
+        animatorManager = GetComponent<AnimatorManager>();
+        playerMovement = GetComponent<PlayerMovement>();
+    }
+
+    private void OnEnable() {
+        if (playerControls == null) {
+            playerControls = new PlayerControls();
+            playerControls.PlayerMovement.Movement.performed += i => movementInput = i.ReadValue<Vector2>();
+            playerControls.PlayerMovement.CameraMovement.performed += i => cameraInput = i.ReadValue<Vector2>();
+            playerControls.PlayerActions.Sprint.performed += i => sprintInput = true;
+            playerControls.PlayerActions.Sprint.canceled += i => sprintInput = false;
+            playerControls.PlayerActions.Fire.performed += i => fireInput = true;
+            playerControls.PlayerActions.Fire.canceled += i => fireInput = false;
+            playerControls.PlayerActions.Scope.performed += i => scopeInput = true;
+            playerControls.PlayerActions.Scope.canceled += i => scopeInput = false;
+            playerControls.PlayerActions.Reload.performed += i => reloadInput = true;
+            playerControls.PlayerActions.Reload.canceled += i => reloadInput = false;
+            playerControls.PlayerActions.SwitchWeapon.performed += i => switchWeaponInput = true;
+            playerControls.PlayerActions.PauseGame.performed += i => pauseGameInput = true;
+            playerControls.PlayerActions.Interact.performed += i => interactInput = true;
+        }
+        playerControls.Enable();
+    }
+
+    private void OnDisable() {
+        playerControls.Disable();
+    }
+
+    public void HandleAllInputs() {
+        HandleMovementInput();
+        HandleSprintingInput();
+        HandlePauseGameInput();
+        StartCoroutine(HandleInteractInput());
+    }
+
+    private void HandleMovementInput() {
+        verticalInput = movementInput.y;
+        horizontalInput = movementInput.x;
+
+        cameraInputX = cameraInput.x;
+        cameraInputY = cameraInput.y;
+
+        moveAmount = Mathf.Clamp01(Mathf.Abs(horizontalInput) + Mathf.Abs(verticalInput));
+        animatorManager.UpdateAnimationValues(0, moveAmount, playerMovement.isRunning);
+    }
+
+    private void HandleSprintingInput() {
+        if (sprintInput == true && moveAmount > 0.5f) {
+            playerMovement.isRunning = true;
+        }
+        else {
+            playerMovement.isRunning = false;
+        }
+    }
+
+    private void HandlePauseGameInput() {
+        if (pauseGameInput == true) {
+            pauseGameInput = false;
+        }
+    } 
+
+    public void SwitchWeaponDone() {
+        switchWeaponInput = false;
+    }
+
+    IEnumerator HandleInteractInput() {
+        yield return new WaitForSeconds(0.2f);
+        if (interactInput) {
+            interactInput = false;
+        }
+    }
+}
