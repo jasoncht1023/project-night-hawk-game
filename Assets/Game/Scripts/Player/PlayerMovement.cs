@@ -65,6 +65,9 @@ public class PlayerMovement : MonoBehaviour {
     }
 
     void HandleRotation() {
+        if (inputManager.scopeInput)
+            return;
+        
         Vector3 targetDirection = Vector3.zero;
 
         targetDirection = camObject.forward * inputManager.verticalInput;
