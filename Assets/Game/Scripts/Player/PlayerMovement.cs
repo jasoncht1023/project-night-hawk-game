@@ -24,6 +24,16 @@ public class PlayerMovement : MonoBehaviour {
     public float fallSpeed = 5f;
     public bool isGrounded;
 
+    [Header("Footsteps")]
+    public AudioSource leftFootAudioSource;
+    public AudioSource rightFootAudioSource;
+    public AudioClip[] footstepSounds;
+    public float walkingFootstepInterval = 0.5f;
+    public float runningFootstepInterval = 0.35f;
+    private float nextFootstepTime;
+    private bool isLeftFootstep = true;
+
+
     private bool isReloading;
     private bool isCarrying;
 
@@ -31,6 +41,15 @@ public class PlayerMovement : MonoBehaviour {
         inputManager = GetComponent<InputManager>();        // InputManager is attached to the same player
         playerRigidbody = GetComponent<Rigidbody>();
         currentHealth = characterHealth;
+    }
+
+    void Update() {
+        float footstepInterval = isRunning ? runningFootstepInterval : walkingFootstepInterval;
+        
+        if (isMoving && isGrounded && Time.time >= nextFootstepTime) {
+            PlayFootStepSound();
+            nextFootstepTime = Time.time + footstepInterval;
+        }
     }
 
     public void HandleAllMovement() {
@@ -121,5 +140,15 @@ public class PlayerMovement : MonoBehaviour {
     void characterDie() {
         Debug.Log("Player Died");
 
+    }
+
+    private void PlayFootStepSound() {
+        AudioSource footAudioSource = isLeftFootstep ? leftFootAudioSource : rightFootAudioSource;
+        if (footstepSounds.Length > 0) {
+            Debug.Log("Audio!");
+            AudioClip clip = footstepSounds[Random.Range(0, footstepSounds.Length)];
+            footAudioSource.PlayOneShot(clip);
+        }
+        isLeftFootstep = !isLeftFootstep;
     }
 }
