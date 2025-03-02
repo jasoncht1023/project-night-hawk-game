@@ -12,8 +12,8 @@ namespace SunTemple
         public bool DoorClosed = true;
         public float OpenRotationAmount = 90;
         public float RotationSpeed = 1f;
-        public float MaxDistance = 3.0f;
-		public string playerTag = "Player";
+        private readonly float MaxDistance = 2.0f;
+        public string playerTag = "Player";
 		private Collider DoorCollider;
 
 		private GameObject Player;
@@ -105,7 +105,7 @@ namespace SunTemple
 		void UpdateCursorHint(){
             // check range and set cursor hint only if in range
             float distance = Mathf.Abs(Vector3.Distance(transform.position, Player.transform.position));
-            if (distance <= MaxDistance - 0.5f)
+            if (distance <= MaxDistance - 0.1f)
             {
                 if (IsLocked)
                 {
