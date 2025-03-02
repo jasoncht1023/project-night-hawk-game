@@ -11,12 +11,13 @@ public class PlayerMovement : MonoBehaviour {
     Vector3 moveDirection;
     public Transform camObject;
     Rigidbody playerRigidbody;
-    public float walkingSpeed = 2f;
-    public float runningSpeed = 5f;
+    public float runningSpeed = 6f;
+    public float walkingSpeed = 3f;
+    public float carryWalkingSpeed = 1.5f;
     public float rotationSpeed = 12f;
 
     [Header("Movement Flags")]
-    public bool isMoving;
+    public bool isWalking;
     public bool isRunning;
 
     [Header("Gravity")]
@@ -24,13 +25,46 @@ public class PlayerMovement : MonoBehaviour {
     public float fallSpeed = 5f;
     public bool isGrounded;
 
+    [Header("Footsteps")]
+    public AudioSource leftFootAudioSource;
+    public AudioSource rightFootAudioSource;
+    public AudioClip[] footstepSounds;
+    public float runningFootstepInterval = 0.35f;
+    public float walkingFootstepInterval = 0.5f;
+    public float carryWalkingFootstepInterval = 0.7f;
+    private float nextFootstepTime;
+    private bool isLeftFootstep = true;
+
+    [Header("Dead body pickup")]
+    public bool isCarrying;
+    public float pickupInterval = 1f;
+    public float nextPickupTime;
+
     private bool isReloading;
-    private bool isCarrying;
 
     void Awake() {
         inputManager = GetComponent<InputManager>();        // InputManager is attached to the same player
         playerRigidbody = GetComponent<Rigidbody>();
         currentHealth = characterHealth;
+    }
+
+    void Update() {
+        float footstepInterval = 0f;
+        if (isRunning == true) {
+            footstepInterval = runningFootstepInterval;
+        }
+        else if (isCarrying == false) {
+            footstepInterval = walkingFootstepInterval;
+        }
+        else {
+            footstepInterval = carryWalkingFootstepInterval;
+        }
+        
+        if (isWalking && isGrounded && Time.time >= nextFootstepTime) {
+            PlayFootStepSound();
+            nextFootstepTime = Time.time + footstepInterval;
+        }
+
     }
 
     public void HandleAllMovement() {
@@ -45,21 +79,28 @@ public class PlayerMovement : MonoBehaviour {
         moveDirection.Normalize();                          // Ensure constant speed regardless of direction
         moveDirection.y = 0;
 
-        if (isRunning == true && isReloading == false && isCarrying == false) {
-            moveDirection = moveDirection * runningSpeed;
-        }
-        else {
-            if (inputManager.moveAmount > 0.5f) {
-                moveDirection = moveDirection * walkingSpeed;
-                isMoving = true;
+        if (inputManager.moveAmount > 0.5f) {
+            if (inputManager.sprintInput == true && isReloading == false && isCarrying == false) {
+                isRunning = true;
+                moveDirection = moveDirection * runningSpeed;
             }
             else {
-                isMoving = false;
+                isRunning = false;
+                isWalking = true;
+                if (isCarrying == false) {
+                    moveDirection = moveDirection * walkingSpeed;
+                }
+                else {
+                    moveDirection = moveDirection * carryWalkingSpeed;
+                }
             }
         }
+        else {
+            isWalking = false;
+        }
 
-        // Assign movement velocity
-        Vector3 movementVelocity = moveDirection;
+            // Assign movement velocity
+            Vector3 movementVelocity = moveDirection;
         movementVelocity.y = playerRigidbody.linearVelocity.y;
         playerRigidbody.linearVelocity = movementVelocity;
     }
@@ -108,6 +149,9 @@ public class PlayerMovement : MonoBehaviour {
 
     public void SetCarrying(bool carrying) {
         isCarrying = carrying;
+        if (carrying == false) {
+            nextPickupTime = Time.time + pickupInterval;
+        }
     }
 
     public void characterHitDamage(float takeDamage) {
@@ -121,5 +165,14 @@ public class PlayerMovement : MonoBehaviour {
     void characterDie() {
         Debug.Log("Player Died");
 
+    }
+
+    private void PlayFootStepSound() {
+        AudioSource footAudioSource = isLeftFootstep ? leftFootAudioSource : rightFootAudioSource;
+        if (footstepSounds.Length > 0) {
+            AudioClip clip = footstepSounds[Random.Range(0, footstepSounds.Length)];
+            footAudioSource.PlayOneShot(clip);
+        }
+        isLeftFootstep = !isLeftFootstep;
     }
 }

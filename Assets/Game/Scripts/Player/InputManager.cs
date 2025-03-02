@@ -60,7 +60,7 @@ public class InputManager : MonoBehaviour {
 
     public void HandleAllInputs() {
         HandleMovementInput();
-        HandleSprintingInput();
+        //HandleSprintingInput();
         HandlePauseGameInput();
         StartCoroutine(HandleInteractInput());
     }
@@ -76,14 +76,14 @@ public class InputManager : MonoBehaviour {
         animatorManager.UpdateAnimationValues(0, moveAmount, playerMovement.isRunning);
     }
 
-    private void HandleSprintingInput() {
-        if (sprintInput == true && moveAmount > 0.5f) {
-            playerMovement.isRunning = true;
-        }
-        else {
-            playerMovement.isRunning = false;
-        }
-    }
+    //private void HandleSprintingInput() {
+    //    if (sprintInput == true && moveAmount > 0.5f) {
+    //        playerMovement.isRunning = true;
+    //    }
+    //    else {
+    //        playerMovement.isRunning = false;
+    //    }
+    //}
 
     private void HandlePauseGameInput() {
         if (pauseGameInput == true) {
