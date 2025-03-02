@@ -13,6 +13,7 @@ public class Soldier : MonoBehaviour {
     public float turningSpeed = 300f;
     private float characterHealth = 20f;
     public float currentHealth;
+    private bool isRunning;
 
     [Header("Destination Var")]
     public Animator animator;
@@ -33,7 +34,9 @@ public class Soldier : MonoBehaviour {
     public float shootingRange = 100f;
     public GameObject shootingRaycastArea;
     public float timeBetweenShooting;
-    bool shootingCooldown;
+    bool shootingCooldown = true;
+    private bool firstShotDelay = true;
+    float timeForFirstShotDelay = 1f;
 
     [Header("Character Controller and Gravity")]
     CharacterController characterController;
@@ -47,6 +50,18 @@ public class Soldier : MonoBehaviour {
 
     DeadBodyPickup deadBodyPickup;
 
+    [Header("Sound Effects")]
+    public AudioSource soundAudioSource;
+    public AudioClip fireSoundClip;
+    public AudioClip footstepClip;
+    public float runningFootstepInterval = 0.35f;
+    public float walkingFootstepInterval = 0.5f;
+    private float nextFootstepTime;
+
+    [Header("Visual Effects")]
+    public ParticleSystem muzzleFlash;
+    public GameObject bloodEffect;
+
     private void Start() {
         currentMovingSpeed = walkingSpeed;
         currentHealth = characterHealth;
@@ -54,6 +69,7 @@ public class Soldier : MonoBehaviour {
         characterController = GetComponent<CharacterController>();
         deadBodyPickup = GetComponent<DeadBodyPickup>();
         deadBodyPickup.enabled = false;                     // Disable picking up soldiers when they are alive
+        soundAudioSource = GetComponent<AudioSource>();
     }
 
     private void Update() {
@@ -86,6 +102,7 @@ public class Soldier : MonoBehaviour {
     private void Walk() {
         if (waypoints.Count == 0) return;
 
+        isRunning = false;
         Transform targetWaypoint = waypoints[currentWaypointIndex];
         Vector3 directionToWaypoint = (targetWaypoint.position - transform.position).normalized;
         Vector3 moveVector = directionToWaypoint * walkingSpeed * Time.deltaTime;
@@ -98,6 +115,8 @@ public class Soldier : MonoBehaviour {
         animator.SetBool("Run", false);
         animator.SetBool("Walk", true);
         animator.SetBool("Scope", false);
+
+        HandleFootstepSound();
 
         if (Vector3.Distance(transform.position, targetWaypoint.position) < 0.1f) {
             // Soldier moves from first way point to last way point
@@ -120,6 +139,7 @@ public class Soldier : MonoBehaviour {
     }
 
     void ChasePlayer() {
+        isRunning = true;
         Vector3 directionToPlayer = (playerBody.transform.position - transform.position).normalized;
         Vector3 moveVector = directionToPlayer * currentMovingSpeed * Time.deltaTime;
 
@@ -133,10 +153,13 @@ public class Soldier : MonoBehaviour {
         animator.SetBool("Scope", false);
 
         currentMovingSpeed = runningSpeed;
+
+        HandleFootstepSound();
     }
 
     void ShootPlayer() {
         currentMovingSpeed = 0f;
+        isRunning = false;
 
         Vector3 directionToPlayer = (playerBody.transform.position - transform.position).normalized;
         Vector3 lookDirection = new Vector3(directionToPlayer.x, 0, directionToPlayer.z);
@@ -146,15 +169,25 @@ public class Soldier : MonoBehaviour {
         animator.SetBool("Walk", false);
         animator.SetBool("Scope", true);
 
-        if (!shootingCooldown) {
+        if (firstShotDelay == true) {
+            Invoke(nameof(AllowShooting), timeForFirstShotDelay);
+            firstShotDelay = false;
+        }
+
+        if (shootingCooldown == false) {
             animator.SetTrigger("Fire");
             RaycastHit hit;
+            muzzleFlash.Play();
+            soundAudioSource.PlayOneShot(fireSoundClip);
+
             if (Physics.Raycast(shootingRaycastArea.transform.position, shootingRaycastArea.transform.forward, out hit, shootingRange)) {
                 Debug.Log("Soldier Hit" + hit.transform.name);
 
                 PlayerMovement player = hit.transform.GetComponent<PlayerMovement>();
                 if (player != null) {
                     player.characterHitDamage(damage);
+                    GameObject bloodEffectGo = Instantiate(bloodEffect, hit.point, Quaternion.LookRotation(hit.normal));
+                    Destroy(bloodEffectGo, 1f);
                 }
             }
 
@@ -162,6 +195,7 @@ public class Soldier : MonoBehaviour {
             shootingCooldown = true;
             Invoke(nameof(AllowShooting), timeBetweenShooting);
         }
+
     }
 
     private void AllowShooting() {
@@ -188,5 +222,22 @@ public class Soldier : MonoBehaviour {
 
         engageImage.SetActive(false);
         spottedImage.SetActive(false);
+    }
+
+    private void HandleFootstepSound() {
+        if (soundAudioSource != null && footstepClip != null) {
+            float footstepInterval = 0f;
+            if (isRunning == true) {
+                footstepInterval = runningFootstepInterval;
+            }
+            else {
+                footstepInterval = walkingFootstepInterval;
+            }
+
+            if (Time.time >= nextFootstepTime) {
+                soundAudioSource.PlayOneShot(footstepClip);
+                nextFootstepTime = Time.time + footstepInterval;
+            }
+        }
     }
 }

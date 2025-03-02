@@ -5,10 +5,10 @@ public class DeadBodyPickup : MonoBehaviour {
     public Transform player;
     public Transform deadBodyPickArea;
     public Transform holdPosition;
-    public float pickupRange = 3f;
+    public float pickupRange = 1.5f;
     public float gravity = 9.81f;
     public float fallingSpeedMultiplier = 2f;
-    private bool isPicking = false;
+    public bool isPickedUp = false;
     CharacterController characterController;
     Vector3 velocity;
     public Animator playerAnimator;
@@ -23,19 +23,20 @@ public class DeadBodyPickup : MonoBehaviour {
     }
 
     private void Update() {
-        if (Vector3.Distance(player.position, transform.position) <= pickupRange && inputManager.interactInput == true) {
-            if (isPicking == true) {
+        if (inputManager.interactInput == true) {
+            if (isPickedUp == true) {
                 DetachBody();
+                playerMovement.SetCarrying(false);
             }
-            else {
+            else if (playerMovement.isCarrying == false && Vector3.Distance(player.position, transform.position) <= pickupRange && Time.time >= playerMovement.nextPickupTime) {
+                playerMovement.SetCarrying(true);
                 AttachBody();
             }
-            playerMovement.SetCarrying(isPicking);
         }
     }
 
     void AttachBody() {
-        isPicking = true;
+        isPickedUp = true;
         pistol.SetActive(false);
         characterController.enabled = false;
         transform.position = holdPosition.position - (deadBodyPickArea.position - transform.position);
@@ -50,7 +51,7 @@ public class DeadBodyPickup : MonoBehaviour {
     }
 
     void DetachBody() {
-        isPicking = false;
+        isPickedUp = false;
         characterController.enabled = true;
         transform.parent = null;
 
@@ -58,7 +59,7 @@ public class DeadBodyPickup : MonoBehaviour {
     }
 
     private void FixedUpdate() {
-        if (!isPicking && characterController.enabled) {
+        if (!isPickedUp && characterController.enabled) {
             if (characterController.isGrounded) {
                 velocity.y -= gravity * fallingSpeedMultiplier * Time.deltaTime;
             }

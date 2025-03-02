@@ -3,8 +3,8 @@ using UnityEngine;
 
 public class FiringController : MonoBehaviour {
     public Transform firePoint;
-    public float fireRate = 1f;
-    public float reloadTime = 2.7f;
+    public float fireRate = 0.8f;
+    public float reloadTime = 3f;
     public int magazineCapacity = 8;
     public int maxAmmo = 40;
     public float fireRange = 100f;
@@ -19,6 +19,15 @@ public class FiringController : MonoBehaviour {
     PlayerMovement playerMovement;
     public Animator animator;
 
+    [Header("Sound Effects")]
+    public AudioSource soundAudioSource;
+    public AudioClip fireSoundClip;
+    public AudioClip reloadSoundClip;
+
+    [Header("Visual Effects")]
+    public ParticleSystem muzzleFlash;
+    public GameObject bloodEffect;
+
     private void Start() {
         inputManager = FindFirstObjectByType<InputManager>();
         playerMovement = FindFirstObjectByType<PlayerMovement>();
@@ -27,7 +36,7 @@ public class FiringController : MonoBehaviour {
     }
 
     private void Update() {
-        if (inputManager.fireInput && Time.time >= nextFireTime && currentMagazine > 0 && isReloading == false) {
+        if (inputManager.fireInput && inputManager.scopeInput && Time.time >= nextFireTime && currentMagazine > 0 && isReloading == false) {
             Fire();
             nextFireTime = Time.time + 1f / fireRate;
         }
@@ -39,7 +48,9 @@ public class FiringController : MonoBehaviour {
     }
 
     void Fire() {
+        muzzleFlash.Play();
         RaycastHit hit;
+        soundAudioSource.PlayOneShot(fireSoundClip);
         if (Physics.Raycast(firePoint.position, firePoint.forward, out hit, fireRange)) {
             Debug.Log("Hit" + hit.transform.name);
 
@@ -47,12 +58,16 @@ public class FiringController : MonoBehaviour {
 
             if (soldier != null) {
                 soldier.characterHitDamage(damage);
+                GameObject bloodEffectGo = Instantiate(bloodEffect, hit.point, Quaternion.LookRotation(hit.normal));
+                Destroy(bloodEffectGo, 1f);
             }
 
             Boss boss = hit.transform.GetComponent<Boss>();
 
             if (boss != null) {
                 boss.characterHitDamage(damage);
+                GameObject bloodEffectGo = Instantiate(bloodEffect, hit.point, Quaternion.LookRotation(hit.normal));
+                Destroy(bloodEffectGo, 1f);
             }
         }
         currentMagazine--;
@@ -61,6 +76,7 @@ public class FiringController : MonoBehaviour {
     IEnumerator Reload() {
         isReloading = true;
         playerMovement.SetReloading(isReloading);
+        soundAudioSource.PlayOneShot(reloadSoundClip);
 
         int ammoToReload = Mathf.Min(magazineCapacity - currentMagazine, currentAmmo);
         yield return new WaitForSeconds(reloadTime);
