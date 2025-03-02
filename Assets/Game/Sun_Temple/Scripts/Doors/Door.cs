@@ -17,7 +17,7 @@ namespace SunTemple
 		private Collider DoorCollider;
 
 		private GameObject Player;
-		private Camera Cam;
+		private InputManager inputManager;
 		private CursorManager cursor;
 
         Vector3 StartRotation;
@@ -26,6 +26,7 @@ namespace SunTemple
         float LerpTime = 1f;
         float CurrentLerpTime = 0;
         bool Rotating;
+		private bool playerInRange = false;
 
 
 		private bool scriptIsEnabled = true;
@@ -50,9 +51,9 @@ namespace SunTemple
 				return;
 			}
 
-			Cam = Camera.main;
-			if (!Cam) {
-				Debug.LogWarning (this.GetType ().Name + ", No objects tagged with MainCamera in Scene", gameObject);
+			inputManager = FindFirstObjectByType<InputManager>();
+			if (!inputManager) {
+				Debug.LogWarning (this.GetType ().Name + ", No InputManager found in Scene", gameObject);
 				scriptIsEnabled = false;
 			}
 		
@@ -74,52 +75,51 @@ namespace SunTemple
 					Rotate ();
 				}
 
-				if (Input.GetKeyDown (KeyCode.Mouse0)) {
-					TryToOpen ();
+				CheckPlayerDistance();
+
+				if (playerInRange && inputManager.interactInput) {
+					TryToOpen();
 				}
 
-
-				if (cursor != null) {
-					CursorHint ();
+				if (cursor != null && playerInRange) {
+					UpdateCursorHint();
 				}
 			}
 
-		} 
+		}
 
 
+		void CheckPlayerDistance() {
+			playerInRange = Mathf.Abs(Vector3.Distance(transform.position, Player.transform.position)) <= MaxDistance;
+		}
 
 
 		void TryToOpen(){
-			if (Mathf.Abs(Vector3.Distance(transform.position, Player.transform.position)) <= MaxDistance){	
-
-				Ray ray = Cam.ScreenPointToRay (new Vector3 (Screen.width / 2, Screen.height / 2, 0));
-				RaycastHit hit;
-											
-				if (DoorCollider.Raycast(ray, out hit, MaxDistance)){					
-					if (IsLocked == false){
-						Activate ();
-					}
-				}
+			if (IsLocked == false) {
+				Activate();
 			}
 		}
 
 
 
-		void CursorHint(){
-			if (Mathf.Abs(Vector3.Distance(transform.position, Player.transform.position)) <= MaxDistance){	
-				Ray ray = Cam.ScreenPointToRay (new Vector3 (Screen.width / 2, Screen.height / 2, 0));
-				RaycastHit hit;
-
-				if (DoorCollider.Raycast (ray, out hit, MaxDistance)) {
-					if (IsLocked == false) {
-						cursor.SetCursorToDoor ();
-					} else if (IsLocked == true) {
-						cursor.SetCursorToLocked ();
-					}					
-				} else {
-					cursor.SetCursorToDefault ();
-				}
-			}
+		void UpdateCursorHint(){
+            // check range and set cursor hint only if in range
+            float distance = Mathf.Abs(Vector3.Distance(transform.position, Player.transform.position));
+            if (distance <= MaxDistance - 0.5f)
+            {
+                if (IsLocked)
+                {
+                    cursor.SetCursorToLocked();
+                }
+                else
+                {
+                    cursor.SetCursorToDoor();
+                }
+            }
+            else
+            {
+                cursor.SetCursorToDefault();
+            }
 		}
 
 
