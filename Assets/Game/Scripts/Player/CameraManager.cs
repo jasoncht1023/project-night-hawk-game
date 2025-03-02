@@ -17,8 +17,11 @@ public class CameraManager : MonoBehaviour {
     public float camPivotSpeed = 0.1f;
     public float lookAngle;
     public float pivotAngle;
-    public float minimumPivotAngle = -30f;
-    public float maximumPivotAngle = 30f;
+    public float minimumPivotAngle = -40f;
+    public float maximumPivotAngle = 40f;
+    
+    [Header("Camera Position Adjustment")]
+    private Vector3 defaultPivotLocalPosition;
 
     [Header("Scoped Settings")]
     public float scopedFOV = 35f;
@@ -31,6 +34,7 @@ public class CameraManager : MonoBehaviour {
         Cursor.visible = false;
 
         playerTransform = FindFirstObjectByType<PlayerManager>().transform;
+        defaultPivotLocalPosition = cameraPivot.localPosition;
     }
 
     void Update() {
@@ -62,6 +66,9 @@ public class CameraManager : MonoBehaviour {
 
         pivotAngle = Mathf.Clamp(pivotAngle, minimumPivotAngle, maximumPivotAngle);
 
+        // Adjust camera position based on pivot angle to keep player in view
+        AdjustCameraPositionForPivotAngle();
+
         rotation = Vector3.zero;
         rotation.y = lookAngle;
         targetRotation = Quaternion.Euler(rotation);
@@ -82,6 +89,23 @@ public class CameraManager : MonoBehaviour {
             camLookSpeed = 0.1f;
             camPivotSpeed = 0.1f;
         }
+    }
+
+    void AdjustCameraPositionForPivotAngle() {
+        float normalizedPivotAngle = Mathf.Abs(pivotAngle) / maximumPivotAngle;
+
+        float additionalHeight = 0;
+        if (pivotAngle < 0) {               // Looking down 
+            additionalHeight = 1.5f * normalizedPivotAngle;
+        }
+        else if (pivotAngle > 0) {         // Looking up
+            additionalHeight = -2.5f * normalizedPivotAngle;
+        }
+
+        // Adjust the camera pivot position
+        Vector3 targetPivotPosition = defaultPivotLocalPosition;
+        targetPivotPosition.y += additionalHeight;
+        cameraPivot.localPosition = targetPivotPosition;
     }
 
     private void HandleScopedFOV() {
