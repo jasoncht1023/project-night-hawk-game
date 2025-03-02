@@ -17,8 +17,8 @@ public class CameraManager : MonoBehaviour {
     public float camPivotSpeed = 0.1f;
     public float lookAngle;
     public float pivotAngle;
-    public float minimumPivotAngle = -30f;
-    public float maximumPivotAngle = 30f;
+    public float minimumPivotAngle = -40f;
+    public float maximumPivotAngle = 40f;
     
     [Header("Camera Position Adjustment")]
     private Vector3 defaultPivotLocalPosition;
@@ -91,19 +91,14 @@ public class CameraManager : MonoBehaviour {
         }
     }
 
-    void AdjustCameraPositionForPivotAngle()
-    {
-        if (isScoped) return; // Don't adjust camera position when scoped
-
+    void AdjustCameraPositionForPivotAngle() {
         float normalizedPivotAngle = Mathf.Abs(pivotAngle) / maximumPivotAngle;
 
         float additionalHeight = 0;
-        if (pivotAngle < 0) // Looking down
-        {
+        if (pivotAngle < 0) {               // Looking down 
             additionalHeight = 1.5f * normalizedPivotAngle;
         }
-        else if (pivotAngle > 0)  // Looking up
-        {
+        else if (pivotAngle > 0) {         // Looking up
             additionalHeight = -2.5f * normalizedPivotAngle;
         }
 
