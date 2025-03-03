@@ -2,16 +2,16 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class PlayerUIManager : MonoBehaviour {
+    [Header("Health UI")]
+    public Image healthBar;
+
+    [Header("Ammo UI")]
     public GameObject ammoDisplaySection;
     public Text currentMagazineText;
     public Text totalAmmoText;
 
-    public GameObject weaponSelectionBorderImage;
-
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start() {
-
-    }
+    [Header("Weapon Selection UI")]
+    public Image weaponSelectionBorderImage;
 
     public void UpdateMagazineCount(int magazine) {
         currentMagazineText.text = magazine.ToString();
@@ -31,5 +31,9 @@ public class PlayerUIManager : MonoBehaviour {
             ammoDisplaySection.SetActive(false);
             borderImageTransform.localPosition = new Vector3(-10f, -20f, 0f);
         }
+    }
+
+    public void UpdateHealthBar(int currentHealth, int maxHealth) {
+        healthBar.fillAmount = Mathf.Clamp01(currentHealth / (float) maxHealth);
     }
 }

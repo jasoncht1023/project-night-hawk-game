@@ -4,10 +4,11 @@ public class PlayerMovement : MonoBehaviour {
     [Header("Script Ref")]
     InputManager inputManager;
     CameraManager cameraManager;
+    PlayerUIManager playerUIManager;
 
     [Header("Movement")]
-    private float characterHealth = 100f;
-    public float currentHealth;
+    private int characterHealth = 100;
+    public int currentHealth;
     Vector3 moveDirection;
     public Transform camObject;
     Rigidbody playerRigidbody;
@@ -44,8 +45,13 @@ public class PlayerMovement : MonoBehaviour {
 
     void Awake() {
         inputManager = GetComponent<InputManager>();        // InputManager is attached to the same player
+        playerUIManager = GetComponent<PlayerUIManager>();
         playerRigidbody = GetComponent<Rigidbody>();
         currentHealth = characterHealth;
+    }
+
+    private void Start() {
+        playerUIManager.UpdateHealthBar(currentHealth, characterHealth);
     }
 
     void Update() {
@@ -155,8 +161,9 @@ public class PlayerMovement : MonoBehaviour {
         }
     }
 
-    public void characterHitDamage(float takeDamage) {
+    public void characterHitDamage(int takeDamage) {
         currentHealth -= takeDamage;
+        playerUIManager.UpdateHealthBar(currentHealth, characterHealth);
 
         if (currentHealth <= 0) {
             characterDie();
