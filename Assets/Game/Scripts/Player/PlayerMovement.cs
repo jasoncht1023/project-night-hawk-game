@@ -3,7 +3,7 @@ using UnityEngine;
 public class PlayerMovement : MonoBehaviour {
     [Header("Script Ref")]
     InputManager inputManager;
-    FiringController firingController;
+    CameraManager cameraManager;
 
     [Header("Movement")]
     private float characterHealth = 100f;
@@ -40,7 +40,7 @@ public class PlayerMovement : MonoBehaviour {
     public float pickupInterval = 1f;
     public float nextPickupTime;
 
-    private bool isReloading;
+    public bool isReloading;
 
     void Awake() {
         inputManager = GetComponent<InputManager>();        // InputManager is attached to the same player
@@ -49,6 +49,7 @@ public class PlayerMovement : MonoBehaviour {
     }
 
     void Update() {
+        cameraManager = FindFirstObjectByType<CameraManager>();
         float footstepInterval = 0f;
         if (isRunning == true) {
             footstepInterval = runningFootstepInterval;
@@ -106,9 +107,9 @@ public class PlayerMovement : MonoBehaviour {
     }
 
     void HandleRotation() {
-        if (inputManager.scopeInput)
+        if (cameraManager.isScoped)
             return;
-        
+
         Vector3 targetDirection = Vector3.zero;
 
         targetDirection = camObject.forward * inputManager.verticalInput;

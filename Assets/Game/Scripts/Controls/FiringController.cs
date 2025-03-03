@@ -17,6 +17,7 @@ public class FiringController : MonoBehaviour {
 
     InputManager inputManager;
     PlayerMovement playerMovement;
+    PlayerUIManager playerUIManager;
     public Animator animator;
 
     [Header("Sound Effects")]
@@ -31,8 +32,11 @@ public class FiringController : MonoBehaviour {
     private void Start() {
         inputManager = FindFirstObjectByType<InputManager>();
         playerMovement = FindFirstObjectByType<PlayerMovement>();
+        playerUIManager = FindFirstObjectByType<PlayerUIManager>();
         currentMagazine = magazineCapacity;
         currentAmmo = maxAmmo;
+        playerUIManager.UpdateMagazineCount(currentMagazine);
+        playerUIManager.UpdateTotalAmmoCount(currentAmmo);
     }
 
     private void Update() {
@@ -71,6 +75,7 @@ public class FiringController : MonoBehaviour {
             }
         }
         currentMagazine--;
+        playerUIManager.UpdateMagazineCount(currentMagazine);
     }
 
     IEnumerator Reload() {
@@ -82,6 +87,8 @@ public class FiringController : MonoBehaviour {
         yield return new WaitForSeconds(reloadTime);
         currentMagazine += ammoToReload;
         currentAmmo -= ammoToReload;
+        playerUIManager.UpdateMagazineCount(currentMagazine);
+        playerUIManager.UpdateTotalAmmoCount(currentAmmo);
 
         if (currentAmmo < maxAmmo - magazineCapacity) {
             maxAmmo = currentAmmo + magazineCapacity;
