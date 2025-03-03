@@ -3,11 +3,12 @@ using UnityEngine;
 public class PlayerMovement : MonoBehaviour {
     [Header("Script Ref")]
     InputManager inputManager;
-    FiringController firingController;
+    CameraManager cameraManager;
+    PlayerUIManager playerUIManager;
 
     [Header("Movement")]
-    private float characterHealth = 100f;
-    public float currentHealth;
+    private int characterHealth = 100;
+    public int currentHealth;
     Vector3 moveDirection;
     public Transform camObject;
     Rigidbody playerRigidbody;
@@ -40,15 +41,21 @@ public class PlayerMovement : MonoBehaviour {
     public float pickupInterval = 1f;
     public float nextPickupTime;
 
-    private bool isReloading;
+    public bool isReloading;
 
     void Awake() {
         inputManager = GetComponent<InputManager>();        // InputManager is attached to the same player
+        playerUIManager = GetComponent<PlayerUIManager>();
         playerRigidbody = GetComponent<Rigidbody>();
         currentHealth = characterHealth;
     }
 
+    private void Start() {
+        playerUIManager.UpdateHealthBar(currentHealth, characterHealth);
+    }
+
     void Update() {
+        cameraManager = FindFirstObjectByType<CameraManager>();
         float footstepInterval = 0f;
         if (isRunning == true) {
             footstepInterval = runningFootstepInterval;
@@ -106,9 +113,9 @@ public class PlayerMovement : MonoBehaviour {
     }
 
     void HandleRotation() {
-        if (inputManager.scopeInput)
+        if (cameraManager.isScoped)
             return;
-        
+
         Vector3 targetDirection = Vector3.zero;
 
         targetDirection = camObject.forward * inputManager.verticalInput;
@@ -154,8 +161,9 @@ public class PlayerMovement : MonoBehaviour {
         }
     }
 
-    public void characterHitDamage(float takeDamage) {
+    public void characterHitDamage(int takeDamage) {
         currentHealth -= takeDamage;
+        playerUIManager.UpdateHealthBar(currentHealth, characterHealth);
 
         if (currentHealth <= 0) {
             characterDie();

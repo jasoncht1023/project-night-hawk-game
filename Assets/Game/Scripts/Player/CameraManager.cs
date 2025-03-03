@@ -26,7 +26,7 @@ public class CameraManager : MonoBehaviour {
     [Header("Scoped Settings")]
     public float scopedFOV = 35f;
     public float defaultFOV = 60f;
-    bool isScoped = false;
+    public bool isScoped = false;
     public Camera camera;
 
     void Awake() {
@@ -39,7 +39,7 @@ public class CameraManager : MonoBehaviour {
 
     void Update() {
         inputManager = FindFirstObjectByType<InputManager>();
-        // playerMovement = FindFirstObjectByType<PlayerMovement>();
+        playerMovement = FindFirstObjectByType<PlayerMovement>();
     }
 
     public void HandleAllCameraMovement() {
@@ -109,7 +109,7 @@ public class CameraManager : MonoBehaviour {
     }
 
     private void HandleScopedFOV() {
-        if (inputManager.scopeInput) {
+        if (inputManager.scopeInput == true && playerMovement.isReloading == false) {
             camera.fieldOfView = scopedFOV;
             isScoped = true;
         }

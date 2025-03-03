@@ -30,7 +30,7 @@ public class Soldier : MonoBehaviour {
     public bool playerInShootingRadius;
 
     [Header("Soldier Shooting Var")]
-    public float damage = 3f;
+    public int damage = 25;
     public float shootingRange = 100f;
     public GameObject shootingRaycastArea;
     public float timeBetweenShooting;
@@ -181,8 +181,6 @@ public class Soldier : MonoBehaviour {
             soundAudioSource.PlayOneShot(fireSoundClip);
 
             if (Physics.Raycast(shootingRaycastArea.transform.position, shootingRaycastArea.transform.forward, out hit, shootingRange)) {
-                Debug.Log("Soldier Hit" + hit.transform.name);
-
                 PlayerMovement player = hit.transform.GetComponent<PlayerMovement>();
                 if (player != null) {
                     player.characterHitDamage(damage);
