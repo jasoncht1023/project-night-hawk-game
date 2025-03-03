@@ -1,7 +1,8 @@
 using System.Collections;
 using UnityEngine;
 
-public class FiringController : MonoBehaviour {
+public class FiringController : MonoBehaviour
+{
     public Transform firePoint;
     public float fireRate = 0.8f;
     public float reloadTime = 3f;
@@ -28,52 +29,78 @@ public class FiringController : MonoBehaviour {
     public ParticleSystem muzzleFlash;
     public GameObject bloodEffect;
 
-    private void Start() {
+    private void Start()
+    {
         inputManager = FindFirstObjectByType<InputManager>();
         playerMovement = FindFirstObjectByType<PlayerMovement>();
         currentMagazine = magazineCapacity;
         currentAmmo = maxAmmo;
     }
 
-    private void Update() {
-        if (inputManager.fireInput && inputManager.scopeInput && Time.time >= nextFireTime && currentMagazine > 0 && isReloading == false) {
+    private void Update()
+    {
+        if (inputManager.fireInput && inputManager.scopeInput && Time.time >= nextFireTime && currentMagazine > 0 && isReloading == false)
+        {
             Fire();
             nextFireTime = Time.time + 1f / fireRate;
         }
 
-        if (inputManager.reloadInput && currentMagazine < magazineCapacity && currentAmmo > 0 && isReloading == false) {
+        if (inputManager.reloadInput && currentMagazine < magazineCapacity && currentAmmo > 0 && isReloading == false)
+        {
             StartCoroutine(Reload());
             animator.SetTrigger("Reloading");
         }
     }
 
-    void Fire() {
+    void Fire()
+    {
         muzzleFlash.Play();
-        RaycastHit hit;
         soundAudioSource.PlayOneShot(fireSoundClip);
-        if (Physics.Raycast(firePoint.position, firePoint.forward, out hit, fireRange)) {
-            Debug.Log("Hit" + hit.transform.name);
 
-            Soldier soldier = hit.transform.GetComponent<Soldier>();
+        RaycastHit hit;
+        if (Physics.Raycast(firePoint.position, firePoint.forward, out hit, fireRange))
+        {
+            Debug.Log("Hit " + hit.transform.name);
 
-            if (soldier != null) {
-                soldier.characterHitDamage(damage);
-                GameObject bloodEffectGo = Instantiate(bloodEffect, hit.point, Quaternion.LookRotation(hit.normal));
-                Destroy(bloodEffectGo, 1f);
+            // Get Soldier component based on hit location
+            Soldier soldier;
+            if (hit.transform.name == "Head" || hit.transform.name == "Helmet")
+            {
+                soldier = hit.transform.parent.GetComponent<Soldier>();
+                if (soldier != null) soldier.characterDie();
+            }
+            else
+            {
+                soldier = hit.transform.GetComponent<Soldier>();
             }
 
-            Boss boss = hit.transform.GetComponent<Boss>();
+            // Handle damage and effects for Soldier
+            if (soldier != null)
+            {
+                soldier.characterHitDamage(damage);
+                CreateBloodEffect(hit);
+            }
 
-            if (boss != null) {
+            // Handle Boss damage
+            Boss boss = hit.transform.GetComponent<Boss>();
+            if (boss != null)
+            {
                 boss.characterHitDamage(damage);
-                GameObject bloodEffectGo = Instantiate(bloodEffect, hit.point, Quaternion.LookRotation(hit.normal));
-                Destroy(bloodEffectGo, 1f);
+                CreateBloodEffect(hit);
             }
         }
+
         currentMagazine--;
     }
 
-    IEnumerator Reload() {
+    private void CreateBloodEffect(RaycastHit hit)
+    {
+        GameObject bloodEffectGo = Instantiate(bloodEffect, hit.point, Quaternion.LookRotation(hit.normal));
+        Destroy(bloodEffectGo, 1f);
+    }
+
+    IEnumerator Reload()
+    {
         isReloading = true;
         playerMovement.SetReloading(isReloading);
         soundAudioSource.PlayOneShot(reloadSoundClip);
@@ -83,7 +110,8 @@ public class FiringController : MonoBehaviour {
         currentMagazine += ammoToReload;
         currentAmmo -= ammoToReload;
 
-        if (currentAmmo < maxAmmo - magazineCapacity) {
+        if (currentAmmo < maxAmmo - magazineCapacity)
+        {
             maxAmmo = currentAmmo + magazineCapacity;
         }
         isReloading = false;
