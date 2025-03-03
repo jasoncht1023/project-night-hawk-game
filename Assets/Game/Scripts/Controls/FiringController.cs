@@ -75,7 +75,7 @@ public class FiringController : MonoBehaviour
             }
 
             // Handle damage and effects for Soldier
-            if (soldier != null)
+            if (soldier != null && soldier.enabled)
             {
                 soldier.characterHitDamage(damage);
                 CreateBloodEffect(hit);
@@ -83,7 +83,7 @@ public class FiringController : MonoBehaviour
 
             // Handle Boss damage
             Boss boss = hit.transform.GetComponent<Boss>();
-            if (boss != null)
+            if (boss != null && boss.enabled)
             {
                 boss.characterHitDamage(damage);
                 CreateBloodEffect(hit);

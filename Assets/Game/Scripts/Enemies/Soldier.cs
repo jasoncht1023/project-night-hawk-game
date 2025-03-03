@@ -223,6 +223,20 @@ public class Soldier : MonoBehaviour {
 
         engageImage.SetActive(false);
         spottedImage.SetActive(false);
+
+        // Disable the BoxCollider component on the Soldier
+        BoxCollider boxCollider = GetComponent<BoxCollider>();
+        if (boxCollider != null) {
+            boxCollider.enabled = false;
+        }
+
+        // Disable the BoxCollider components on all child objects
+        BoxCollider[] childColliders = GetComponentsInChildren<BoxCollider>();
+        Debug.Log("Child colliders count: " + childColliders.Length);
+        foreach (BoxCollider childCollider in childColliders)
+        {
+            childCollider.enabled = false;
+        }
     }
 
     private void HandleFootstepSound() {
