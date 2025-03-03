@@ -16,6 +16,24 @@ public class GameManager : MonoBehaviour {
         inputManager = FindFirstObjectByType<InputManager>();
         player = GameObject.FindGameObjectWithTag("Player");
         pistol.SetActive(false);
+        
+        // Visualize all BoxColliders in the scene
+        BoxCollider[] colliders = FindObjectsOfType<BoxCollider>();
+        
+        foreach (BoxCollider collider in colliders)
+        {
+            GameObject visualizer = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            visualizer.transform.SetParent(collider.transform, false);
+            visualizer.transform.localPosition = collider.center;
+            visualizer.transform.localScale = collider.size;
+            
+            // Make the visualizer transparent and non-interactive
+            visualizer.GetComponent<Collider>().enabled = false;
+            Renderer renderer = visualizer.GetComponent<Renderer>();
+            Material mat = new Material(Shader.Find("Transparent/Diffuse"));
+            mat.color = new Color(0, 1, 0, 0.3f);
+            renderer.material = mat;
+        }
     }
 
     private void Update() {
