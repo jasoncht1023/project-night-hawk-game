@@ -230,7 +230,6 @@ public class Soldier : MonoBehaviour {
 
         // Disable the BoxCollider components on all child objects
         BoxCollider[] childColliders = GetComponentsInChildren<BoxCollider>();
-        Debug.Log("Child colliders count: " + childColliders.Length);
         foreach (BoxCollider childCollider in childColliders)
         {
             childCollider.enabled = false;
