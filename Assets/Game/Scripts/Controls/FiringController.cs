@@ -53,29 +53,55 @@ public class FiringController : MonoBehaviour {
 
     void Fire() {
         muzzleFlash.Play();
-        RaycastHit hit;
         soundAudioSource.PlayOneShot(fireSoundClip);
+
+        RaycastHit hit;
         if (Physics.Raycast(firePoint.position, firePoint.forward, out hit, fireRange)) {
-            Debug.Log("Hit" + hit.transform.name);
+            Debug.Log("Hit " + hit.transform.name);
 
-            Soldier soldier = hit.transform.GetComponent<Soldier>();
+            // Get Soldier component based on hit location
+            Soldier soldier;
 
-            if (soldier != null) {
-                soldier.characterHitDamage(damage);
-                GameObject bloodEffectGo = Instantiate(bloodEffect, hit.point, Quaternion.LookRotation(hit.normal));
-                Destroy(bloodEffectGo, 1f);
+            if (hit.transform.name == "mixamorig:Head") {
+                soldier = hit.transform.parent.parent.parent.parent.parent.parent.GetComponent<Soldier>();
+
+                if (soldier != null && soldier.enabled) {
+                    soldier.characterDie();
+                    CreateBloodEffect(hit);
+                }
+            }
+            else {
+                if (hit.transform.name == "mixamorig:LeftArm" || hit.transform.name == "mixamorig:RightArm") {
+                    soldier = hit.transform.parent.parent.parent.parent.parent.parent.GetComponent<Soldier>();
+                }
+                else if (hit.transform.name == "mixamorig:LeftForeArm" || hit.transform.name == "mixamorig:RightForeArm") {
+                    soldier = hit.transform.parent.parent.parent.parent.parent.parent.parent.GetComponent<Soldier>();
+                }
+                else {
+                    soldier = hit.transform.GetComponent<Soldier>();
+                }
+
+                if (soldier != null && soldier.enabled) {
+                    soldier.characterHitDamage(damage);
+                    CreateBloodEffect(hit);
+                }
             }
 
+            // Handle Boss damage
             Boss boss = hit.transform.GetComponent<Boss>();
-
-            if (boss != null) {
+            if (boss != null && boss.enabled) {
                 boss.characterHitDamage(damage);
-                GameObject bloodEffectGo = Instantiate(bloodEffect, hit.point, Quaternion.LookRotation(hit.normal));
-                Destroy(bloodEffectGo, 1f);
+                CreateBloodEffect(hit);
             }
         }
+
         currentMagazine--;
         playerUIManager.UpdateMagazineCount(currentMagazine);
+    }
+
+    private void CreateBloodEffect(RaycastHit hit) {
+        GameObject bloodEffectGo = Instantiate(bloodEffect, hit.point, Quaternion.LookRotation(hit.normal));
+        Destroy(bloodEffectGo, 1f);
     }
 
     IEnumerator Reload() {

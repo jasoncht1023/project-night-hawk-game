@@ -206,12 +206,13 @@ public class Soldier : MonoBehaviour {
         currentHealth -= takeDamage;
 
         if (currentHealth <= 0) {
-            animator.SetBool("BodyShotDie", true);
             characterDie();
         }
     }
 
-    void characterDie() {
+    public void characterDie() {
+        animator.SetBool("BodyShotDie", true);
+
         currentMovingSpeed = 0f;
         shootingRange = 0;
 
