@@ -87,7 +87,7 @@ public class PlayerMovement : MonoBehaviour {
         moveDirection.y = 0;
 
         if (inputManager.moveAmount > 0.5f) {
-            if (inputManager.sprintInput == true && isReloading == false && isCarrying == false) {
+            if (inputManager.sprintInput == true && isReloading == false && isCarrying == false && cameraManager.isScoped == false) {
                 isRunning = true;
                 moveDirection = moveDirection * runningSpeed;
             }
