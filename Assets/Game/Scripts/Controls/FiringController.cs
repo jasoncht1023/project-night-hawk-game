@@ -64,21 +64,23 @@ public class FiringController : MonoBehaviour
 
             // Get Soldier component based on hit location
             Soldier soldier;
-            if (hit.transform.name == "Head" || hit.transform.name == "Helmet")
+            if (hit.transform.name == "Head")
             {
                 soldier = hit.transform.parent.GetComponent<Soldier>();
-                if (soldier != null) soldier.characterDie();
+                if (soldier != null && soldier.enabled)
+                {
+                    soldier.characterDie();
+                    CreateBloodEffect(hit);
+                }
             }
             else
             {
                 soldier = hit.transform.GetComponent<Soldier>();
-            }
-
-            // Handle damage and effects for Soldier
-            if (soldier != null && soldier.enabled)
-            {
-                soldier.characterHitDamage(damage);
-                CreateBloodEffect(hit);
+                if (soldier != null && soldier.enabled)
+                {
+                    soldier.characterHitDamage(damage);
+                    CreateBloodEffect(hit);
+                }
             }
 
             // Handle Boss damage
