@@ -28,6 +28,7 @@ public class InputManager : MonoBehaviour {
     public bool switchWeaponInput;
     public bool pauseGameInput;
     public bool interactInput;
+    public bool crouchInput;
 
     private void Awake() {
         animatorManager = GetComponent<AnimatorManager>();
@@ -50,6 +51,9 @@ public class InputManager : MonoBehaviour {
             playerControls.PlayerActions.SwitchWeapon.performed += i => switchWeaponInput = true;
             playerControls.PlayerActions.PauseGame.performed += i => pauseGameInput = true;
             playerControls.PlayerActions.Interact.performed += i => interactInput = true;
+            playerControls.PlayerActions.Crouch.performed += i => crouchInput = true;
+            
+
         }
         playerControls.Enable();
     }
