@@ -51,9 +51,15 @@ public class AnimatorManager : MonoBehaviour {
         }
         #endregion
 
-        if (isRunning == true) {
+        if (isRunning == true)
+        {
             snappedHorizontal = horizontalMovement;
-            snappedVertical = 2;
+            if (snappedVertical < 0) {
+                snappedVertical = -2;
+            }
+            else {
+                snappedVertical = 2;
+            }
         }
 
         animator.SetFloat(horizontal, snappedHorizontal, 0.1f, Time.deltaTime);

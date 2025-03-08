@@ -4,6 +4,7 @@ public class GameManager : MonoBehaviour {
     InputManager inputManager;
     PlayerMovement playerMovement;
     PlayerUIManager playerUIManager;
+    CameraManager cameraManager;
 
     public GameObject pistol;
     public Animator animator;
@@ -23,10 +24,12 @@ public class GameManager : MonoBehaviour {
     private void Update() {
         playerMovement = FindFirstObjectByType<PlayerMovement>();
         playerUIManager = FindFirstObjectByType<PlayerUIManager>();
+        cameraManager = FindFirstObjectByType<CameraManager>();
 
         // Switch between pistol and fist
         if (inputManager.switchWeaponInput == true && playerMovement.isReloading == false) {
             pistol.SetActive(!pistol.activeSelf);
+            cameraManager.isHoldingPistol = pistol.activeSelf;
             playerUIManager.UpdateWeaponSelection(pistol.activeSelf);
             inputManager.SwitchWeaponDone();
         }

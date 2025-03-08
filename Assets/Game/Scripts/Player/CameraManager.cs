@@ -26,6 +26,7 @@ public class CameraManager : MonoBehaviour {
     [Header("Scoped Settings")]
     public float scopedFOV = 35f;
     public float defaultFOV = 60f;
+    public bool isHoldingPistol = false;
     public bool isScoped = false;
     public Camera camera;
 
@@ -109,7 +110,7 @@ public class CameraManager : MonoBehaviour {
     }
 
     private void HandleScopedFOV() {
-        if (inputManager.scopeInput == true && playerMovement.isReloading == false) {
+        if (inputManager.scopeInput == true && playerMovement.isReloading == false && isHoldingPistol == true) {
             camera.fieldOfView = scopedFOV;
             isScoped = true;
         }
