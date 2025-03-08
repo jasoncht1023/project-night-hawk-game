@@ -245,6 +245,15 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Assassinate"",
+                    ""type"": ""Button"",
+                    ""id"": ""aa84d0a7-1ce2-44b9-81a9-2dc15b7a502f"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -324,6 +333,17 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""action"": ""Interact"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""9425de4b-f4cd-4e02-ab45-879b6fe89046"",
+                    ""path"": ""<Keyboard>/f"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Assassinate"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -343,6 +363,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         m_PlayerActions_PauseGame = m_PlayerActions.FindAction("PauseGame", throwIfNotFound: true);
         m_PlayerActions_Reload = m_PlayerActions.FindAction("Reload", throwIfNotFound: true);
         m_PlayerActions_Interact = m_PlayerActions.FindAction("Interact", throwIfNotFound: true);
+        m_PlayerActions_Assassinate = m_PlayerActions.FindAction("Assassinate", throwIfNotFound: true);
     }
 
     ~@PlayerControls()
@@ -538,6 +559,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
     private readonly InputAction m_PlayerActions_PauseGame;
     private readonly InputAction m_PlayerActions_Reload;
     private readonly InputAction m_PlayerActions_Interact;
+    private readonly InputAction m_PlayerActions_Assassinate;
     /// <summary>
     /// Provides access to input actions defined in input action map "PlayerActions".
     /// </summary>
@@ -577,6 +599,10 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "PlayerActions/Interact".
         /// </summary>
         public InputAction @Interact => m_Wrapper.m_PlayerActions_Interact;
+        /// <summary>
+        /// Provides access to the underlying input action "PlayerActions/Assassinate".
+        /// </summary>
+        public InputAction @Assassinate => m_Wrapper.m_PlayerActions_Assassinate;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -624,6 +650,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @Interact.started += instance.OnInteract;
             @Interact.performed += instance.OnInteract;
             @Interact.canceled += instance.OnInteract;
+            @Assassinate.started += instance.OnAssassinate;
+            @Assassinate.performed += instance.OnAssassinate;
+            @Assassinate.canceled += instance.OnAssassinate;
         }
 
         /// <summary>
@@ -656,6 +685,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @Interact.started -= instance.OnInteract;
             @Interact.performed -= instance.OnInteract;
             @Interact.canceled -= instance.OnInteract;
+            @Assassinate.started -= instance.OnAssassinate;
+            @Assassinate.performed -= instance.OnAssassinate;
+            @Assassinate.canceled -= instance.OnAssassinate;
         }
 
         /// <summary>
@@ -767,5 +799,12 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnInteract(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Assassinate" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnAssassinate(InputAction.CallbackContext context);
     }
 }

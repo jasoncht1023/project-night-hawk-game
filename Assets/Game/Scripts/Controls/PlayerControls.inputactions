@@ -159,6 +159,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "Assassinate",
+                    "type": "Button",
+                    "id": "aa84d0a7-1ce2-44b9-81a9-2dc15b7a502f",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -236,6 +245,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "Interact",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "9425de4b-f4cd-4e02-ab45-879b6fe89046",
+                    "path": "<Keyboard>/f",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Assassinate",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
