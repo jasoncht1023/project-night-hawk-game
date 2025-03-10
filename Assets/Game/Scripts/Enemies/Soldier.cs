@@ -35,7 +35,7 @@ public class Soldier : MonoBehaviour {
     [Header("Soldier Shooting Var")]
     public int damage = 25;
     public float shootingRange = 100f;
-    public GameObject shootingRaycastArea;
+    public GameObject shootingRaycastPosition;
     public float timeBetweenShooting;
     bool shootingCooldown = true;
     private bool firstShotDelay = true;
@@ -181,7 +181,7 @@ public class Soldier : MonoBehaviour {
             muzzleFlash.Play();
             soundAudioSource.PlayOneShot(fireSoundClip);
 
-            if (Physics.Raycast(shootingRaycastArea.transform.position, shootingRaycastArea.transform.forward, out hit, shootingRange)) {
+            if (Physics.Raycast(shootingRaycastPosition.transform.position, shootingRaycastPosition.transform.forward, out hit, shootingRange)) {
                 PlayerMovement player = hit.transform.GetComponent<PlayerMovement>();
                 if (player != null) {
                     player.characterHitDamage(damage);
@@ -216,6 +216,12 @@ public class Soldier : MonoBehaviour {
 
         currentMovingSpeed = 0f;
         shootingRange = 0;
+
+        // Disable all the colliders in the soldier
+        Collider[] colliders = GetComponentsInChildren<Collider>();
+        foreach (Collider collider in colliders) {
+            collider.enabled = false;
+        }
 
         this.enabled = false;
         deadBodyPickup.enabled = true;

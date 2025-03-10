@@ -71,6 +71,9 @@ public class PlayerMovement : MonoBehaviour {
             PlayFootStepSound();
             nextFootstepTime = Time.time + footstepInterval;
         }
+        if (inputManager.sprintInput == false || inputManager.movementInput == new Vector2(0,0)) {
+            isRunning = false;
+        }
 
     }
 
@@ -106,8 +109,8 @@ public class PlayerMovement : MonoBehaviour {
             isWalking = false;
         }
 
-            // Assign movement velocity
-            Vector3 movementVelocity = moveDirection;
+        // Assign movement velocity
+        Vector3 movementVelocity = moveDirection;
         movementVelocity.y = playerRigidbody.linearVelocity.y;
         playerRigidbody.linearVelocity = movementVelocity;
     }
