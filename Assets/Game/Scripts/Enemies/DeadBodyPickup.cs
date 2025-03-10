@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.AI;
 
 public class DeadBodyPickup : MonoBehaviour {
     InputManager inputManager;
@@ -9,7 +10,7 @@ public class DeadBodyPickup : MonoBehaviour {
     public float gravity = 9.81f;
     public float fallingSpeedMultiplier = 2f;
     public bool isPickedUp = false;
-    CharacterController characterController;
+    NavMeshAgent agent;
     Vector3 velocity;
     public Animator playerAnimator;
 
@@ -18,7 +19,7 @@ public class DeadBodyPickup : MonoBehaviour {
 
     private void Start() {
         inputManager = FindFirstObjectByType<InputManager>();
-        characterController = GetComponent<CharacterController>();
+        agent = GetComponent<NavMeshAgent>();
         playerMovement = FindFirstObjectByType<PlayerMovement>();
     }
 
@@ -38,7 +39,7 @@ public class DeadBodyPickup : MonoBehaviour {
     void AttachBody() {
         isPickedUp = true;
         pistol.SetActive(false);
-        characterController.enabled = false;
+        agent.enabled = false;
         transform.position = holdPosition.position - (deadBodyPickArea.position - transform.position);
         transform.parent = player;
 
@@ -52,22 +53,23 @@ public class DeadBodyPickup : MonoBehaviour {
 
     void DetachBody() {
         isPickedUp = false;
-        characterController.enabled = true;
+        agent.enabled = true;
         transform.parent = null;
 
         playerAnimator.Play("Movement");
     }
 
     private void FixedUpdate() {
-        if (!isPickedUp && characterController.enabled) {
-            if (characterController.isGrounded) {
+        if (!isPickedUp && agent.enabled) {
+        
+            if (agent.isOnNavMesh) {
                 velocity.y -= gravity * fallingSpeedMultiplier * Time.deltaTime;
             }
             else {
                 velocity.y = 0;
             }
-
-            characterController.Move(velocity * Time.deltaTime);
+            
+            agent.Move(velocity * Time.deltaTime);
         }
     }
 }
