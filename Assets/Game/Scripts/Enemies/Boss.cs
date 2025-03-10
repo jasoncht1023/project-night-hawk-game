@@ -20,7 +20,7 @@ public class Boss : MonoBehaviour {
         }
     }
 
-    void characterDie() {
+    public void characterDie() {
         
     }
 

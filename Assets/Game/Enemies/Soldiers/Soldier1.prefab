@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3204393777227617727}
   - component: {fileID: 8499787968244996736}
+  - component: {fileID: 3243886967029282137}
   m_Layer: 0
   m_Name: Head
   m_TagString: Untagged
@@ -94,6 +95,27 @@ SkinnedMeshRenderer:
     m_Center: {x: 0.0010080934, y: 0.37324852, z: 0.08661707}
     m_Extent: {x: 0.12150851, y: 0.19953527, z: 0.16293876}
   m_DirtyAABB: 0
+--- !u!65 &3243886967029282137
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 48170708061277253}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.13285407, y: 0.23212342, z: 0.1955482}
+  m_Center: {x: -0.014902225, y: 1.1756777, z: 0.0061365142}
 --- !u!1 &251951119644930537
 GameObject:
   m_ObjectHideFlags: 0
@@ -3048,6 +3070,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8278921232956445689}
   - component: {fileID: 7294844156155468200}
+  - component: {fileID: 8327223556152628862}
   m_Layer: 0
   m_Name: Helmet
   m_TagString: Untagged
@@ -3129,3 +3152,24 @@ SkinnedMeshRenderer:
     m_Center: {x: 0.000000029802322, y: 0.40611532, z: 0.080925316}
     m_Extent: {x: 0.14177018, y: 0.18572149, z: 0.18521154}
   m_DirtyAABB: 0
+--- !u!65 &8327223556152628862
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9164520155908041457}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.15500763, y: 0.21908088, z: 0.21857125}
+  m_Center: {x: -0.01545332, y: 1.1933274, z: 0.0015528183}
