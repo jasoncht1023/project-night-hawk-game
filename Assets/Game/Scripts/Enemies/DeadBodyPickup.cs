@@ -59,26 +59,23 @@ public class DeadBodyPickup : MonoBehaviour {
     void UpdatePickUpHint() {
         float distance = Mathf.Abs(Vector3.Distance(player.position, transform.position));
         if (distance <= MaxDistance - 0.1f) {
-            // Show hint based on current state, even if interact isn't pressed
             if (isPickedUp == false && playerMovement.isCarrying == false && Time.time >= playerMovement.nextPickupTime) {
                 playerUIManager.ActionUIText("E : Pick up Body");
             } else if (isPickedUp == true) {
                 playerUIManager.ActionUIText("E : Drop Body");
             }
 
-            // Handle interaction when "E" is pressed
             if (inputManager.interactInput == true) {
                 if (isPickedUp == true) {
                     DetachBody();
                     playerMovement.SetCarrying(false);
-                    playerUIManager.ActionUIText(""); // Clear text after dropping
+                    playerUIManager.ActionUIText(""); 
                 } else if (playerMovement.isCarrying == false && Time.time >= playerMovement.nextPickupTime) {
                     playerMovement.SetCarrying(true);
                     AttachBody();
                 }
             }
         } else {
-            // Clear text when out of range
             playerUIManager.ActionUIText("");
         }
     }
