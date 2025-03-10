@@ -16,24 +16,73 @@ public class DeadBodyPickup : MonoBehaviour {
     PlayerMovement playerMovement;
     public GameObject pistol;
 
+    private PlayerUIManager playerUIManager;
+    public string playerTag = "Player";
+    private GameObject Player;
+    private bool playerInRange = false;
+    private readonly float MaxDistance = 2.0f;
+
     private void Start() {
+        playerUIManager = FindFirstObjectByType<PlayerUIManager>();
+        Player = GameObject.FindGameObjectWithTag (playerTag);
         inputManager = FindFirstObjectByType<InputManager>();
         characterController = GetComponent<CharacterController>();
         playerMovement = FindFirstObjectByType<PlayerMovement>();
     }
 
     private void Update() {
-        if (inputManager.interactInput == true) {
-            if (isPickedUp == true) {
-                DetachBody();
-                playerMovement.SetCarrying(false);
+        //if (inputManager.interactInput == true) {
+        //    if (isPickedUp == true) {
+        //        playerUIManager.ActionUIText("E : Pick up Body");
+        //        DetachBody();
+        //        playerMovement.SetCarrying(false);
+        //    }
+        //    else if (playerMovement.isCarrying == false && Vector3.Distance(player.position, transform.position) <= pickupRange && Time.time >= playerMovement.nextPickupTime) {
+        //        playerUIManager.ActionUIText("E : Drop Body");
+        //        playerMovement.SetCarrying(true);
+        //        AttachBody();
+        //    }
+        //}
+
+        CheckPlayerDistance();
+
+        if (playerInRange) {
+            UpdatePickUpHint();
+        }
+
+    }
+
+    void CheckPlayerDistance() {
+        playerInRange = Mathf.Abs(Vector3.Distance(player.position, transform.position)) <= MaxDistance;
+    }
+
+    void UpdatePickUpHint() {
+        float distance = Mathf.Abs(Vector3.Distance(player.position, transform.position));
+        if (distance <= MaxDistance - 0.1f) {
+            // Show hint based on current state, even if interact isn't pressed
+            if (isPickedUp == false && playerMovement.isCarrying == false && Time.time >= playerMovement.nextPickupTime) {
+                playerUIManager.ActionUIText("E : Pick up Body");
+            } else if (isPickedUp == true) {
+                playerUIManager.ActionUIText("E : Drop Body");
             }
-            else if (playerMovement.isCarrying == false && Vector3.Distance(player.position, transform.position) <= pickupRange && Time.time >= playerMovement.nextPickupTime) {
-                playerMovement.SetCarrying(true);
-                AttachBody();
+
+            // Handle interaction when "E" is pressed
+            if (inputManager.interactInput == true) {
+                if (isPickedUp == true) {
+                    DetachBody();
+                    playerMovement.SetCarrying(false);
+                    playerUIManager.ActionUIText(""); // Clear text after dropping
+                } else if (playerMovement.isCarrying == false && Time.time >= playerMovement.nextPickupTime) {
+                    playerMovement.SetCarrying(true);
+                    AttachBody();
+                }
             }
+        } else {
+            // Clear text when out of range
+            playerUIManager.ActionUIText("");
         }
     }
+
 
     void AttachBody() {
         isPickedUp = true;
@@ -48,6 +97,7 @@ public class DeadBodyPickup : MonoBehaviour {
         velocity = Vector3.zero;
 
         playerAnimator.Play("DeadBodyCarrying");
+
     }
 
     void DetachBody() {

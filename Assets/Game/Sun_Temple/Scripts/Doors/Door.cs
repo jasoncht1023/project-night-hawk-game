@@ -8,7 +8,9 @@ namespace SunTemple
 
     public class Door : MonoBehaviour
     {
-		public bool IsLocked = false;
+        private PlayerUIManager playerUIManager;
+
+        public bool IsLocked = false;
         public bool DoorClosed = true;
         public float OpenRotationAmount = 90;
         public float RotationSpeed = 1f;
@@ -19,7 +21,7 @@ namespace SunTemple
 		private GameObject Player;
 		private InputManager inputManager;
 		private CursorManager cursor;
-
+ 
         Vector3 StartRotation;
         float StartAngle = 0;
         float EndAngle = 0;
@@ -56,8 +58,14 @@ namespace SunTemple
 				Debug.LogWarning (this.GetType ().Name + ", No InputManager found in Scene", gameObject);
 				scriptIsEnabled = false;
 			}
-		
-			cursor = CursorManager.instance;
+
+            playerUIManager = FindFirstObjectByType<PlayerUIManager>();
+            if (!playerUIManager) {
+                Debug.LogWarning(this.GetType().Name + ", No PlayerUIManager found in Scene", gameObject);
+                scriptIsEnabled = false;
+            }
+
+            cursor = CursorManager.instance;
 
 			if (cursor != null) {
 				cursor.SetCursorToDefault ();
@@ -109,16 +117,22 @@ namespace SunTemple
             {
                 if (IsLocked)
                 {
-                    cursor.SetCursorToLocked();
+                    //cursor.SetCursorToLocked();
+                    playerUIManager.ActionUIText("Door is locked");
                 }
                 else
                 {
-                    cursor.SetCursorToDoor();
+                    //cursor.SetCursorToDoor();
+                    if (DoorClosed)
+                        playerUIManager.ActionUIText("E : Open Door");
+                    else
+                        playerUIManager.ActionUIText("E : Close Door");
                 }
             }
             else
             {
                 cursor.SetCursorToDefault();
+                playerUIManager.ActionUIText("");
             }
 		}
 
