@@ -116,7 +116,7 @@ public class Soldier : MonoBehaviour {
 
         HandleFootstepSound();
 
-        if (Vector3.Distance(transform.position, agent.destination) <= 0.15f) {
+        if (Vector3.Distance(transform.position, agent.destination) < 0.15f) {
             // Soldier moves from first way point to last way point
             if (movingForward == true) {
                 currentWaypointIndex++;
