@@ -12,15 +12,24 @@ public class AssassinationController : MonoBehaviour
     private InputManager inputManager;
     private Animator playerAnimator;
     private PlayerMovement playerMovement;
+    public GameObject m9Knife;
+    public GameObject pistol;
 
     private bool canAssassinate = false;
     private Soldier targetSoldier = null;
+    private bool wasPistolActive = false;
 
     private void Awake()
     {
         inputManager = GetComponent<InputManager>();
         playerAnimator = GetComponent<Animator>();
         playerMovement = GetComponent<PlayerMovement>();
+
+        // Make sure knife is hidden initially
+        if (m9Knife != null)
+        {
+            m9Knife.SetActive(false);
+        }
     }
 
     private void Update()
@@ -91,6 +100,19 @@ public class AssassinationController : MonoBehaviour
         // Rotate player to face the back of the soldier
         transform.rotation = Quaternion.LookRotation(soldierForward);
 
+        // Store pistol state
+        if (pistol != null)
+        {
+            wasPistolActive = pistol.activeSelf;
+            pistol.SetActive(false);
+        }
+
+        // Show knife before assassination
+        if (m9Knife != null)
+        {
+            m9Knife.SetActive(true);
+        }
+
         // Trigger assassination animation
         playerAnimator.SetTrigger("Assassinate");
 
@@ -99,6 +121,18 @@ public class AssassinationController : MonoBehaviour
 
         // Kill the soldier
         targetSoldier.characterDie();
+
+        // Hide knife after assassination is complete
+        if (m9Knife != null)
+        {
+            m9Knife.SetActive(false);
+        }
+
+        // Restore pistol to original state if it was active
+        if (pistol != null && wasPistolActive)
+        {
+            pistol.SetActive(true);
+        }
 
         // Re-enable player movement
         playerMovement.enabled = true;
