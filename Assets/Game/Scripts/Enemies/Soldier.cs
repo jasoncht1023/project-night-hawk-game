@@ -319,7 +319,11 @@ public class Soldier : MonoBehaviour {
     }
 
     public void characterDie() {
-        animator.SetBool("BodyShotDie", true);
+        if (isBeingAssassinated) {
+            animator.SetBool("StabDie", true);
+        } else {
+            animator.SetBool("BodyShotDie", true);
+        }
 
         currentMovingSpeed = 0f;
         shootingRange = 0;

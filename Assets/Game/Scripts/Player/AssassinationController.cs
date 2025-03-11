@@ -116,13 +116,13 @@ public class AssassinationController : MonoBehaviour {
         playerAnimator.SetTrigger("Assassinate");
 
         // Wait for animation to complete (approximate time)
-        yield return new WaitForSeconds(0.75f);
+        yield return new WaitForSeconds(0.9f);
 
         // Kill the soldier
         targetSoldier.characterDie();
 
         // Wait for animation to complete (approximate time)
-        yield return new WaitForSeconds(1.25f);
+        yield return new WaitForSeconds(1.35f);
 
         // Hide knife after assassination is complete
         if (m9Knife != null) {
