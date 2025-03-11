@@ -1,12 +1,11 @@
 using System.Collections;
 using UnityEngine;
 
-public class AssassinationController : MonoBehaviour
-{
+public class AssassinationController : MonoBehaviour {
     [Header("Assassination Settings")]
     public float assassinationDistance = 2.0f;
     public LayerMask soldierLayer;
-    public float teleportOffset = 0.5f; // Distance behind the soldier to teleport
+    private readonly float teleportOffset = 1.25f; // Distance behind the soldier to teleport
 
     [Header("References")]
     private InputManager inputManager;
@@ -18,28 +17,29 @@ public class AssassinationController : MonoBehaviour
     private bool canAssassinate = false;
     private Soldier targetSoldier = null;
     private bool wasPistolActive = false;
+    private bool isAssassinating = false;
 
-    private void Awake()
-    {
+    private void Awake() {
         inputManager = GetComponent<InputManager>();
         playerAnimator = GetComponent<Animator>();
         playerMovement = GetComponent<PlayerMovement>();
 
         // Make sure knife is hidden initially
-        if (m9Knife != null)
-        {
+        if (m9Knife != null) {
             m9Knife.SetActive(false);
         }
     }
 
-    private void Update()
-    {
+    private void Update() {
         CheckForAssassinationTargets();
         HandleAssassination();
     }
 
-    private void CheckForAssassinationTargets()
-    {
+    private void CheckForAssassinationTargets() {
+        // Don't check for targets during assassination
+        if (isAssassinating)
+            return;
+
         // Reset target
         canAssassinate = false;
         targetSoldier = null;
@@ -47,21 +47,18 @@ public class AssassinationController : MonoBehaviour
         // Check for soldiers in assassination range
         Collider[] hitColliders = Physics.OverlapSphere(transform.position, assassinationDistance, soldierLayer);
 
-        if (hitColliders.Length > 0)
-        {
+        if (hitColliders.Length > 0) {
             // Find the closest soldier
             float closestDistance = float.MaxValue;
 
-            foreach (var hitCollider in hitColliders)
-            {
+            foreach (var hitCollider in hitColliders) {
                 Soldier soldier = hitCollider.GetComponent<Soldier>();
 
                 if (soldier != null && soldier.enabled) // Only target active soldiers
                 {
                     float distance = Vector3.Distance(transform.position, soldier.transform.position);
 
-                    if (distance < closestDistance)
-                    {
+                    if (distance < closestDistance) {
                         closestDistance = distance;
                         targetSoldier = soldier;
                         canAssassinate = true;
@@ -71,21 +68,24 @@ public class AssassinationController : MonoBehaviour
         }
     }
 
-    private void HandleAssassination()
-    {
-        if (canAssassinate && inputManager.assassinateInput)
-        {
+    private void HandleAssassination() {
+        if (canAssassinate && inputManager.assassinateInput && !isAssassinating) {
             inputManager.assassinateInput = false; // Reset input
             StartCoroutine(PerformAssassination());
         }
     }
 
-    private IEnumerator PerformAssassination()
-    {
+    private IEnumerator PerformAssassination() {
         if (targetSoldier == null) yield break;
 
-        // Disable player movement temporarily
-        playerMovement.enabled = false;
+        // Set assassination flag to prevent movement
+        isAssassinating = true;
+
+        // Force the velocity to zero to stop any ongoing movement
+        Rigidbody rb = GetComponent<Rigidbody>();
+        if (rb != null) {
+            rb.linearVelocity = Vector3.zero;
+        }
 
         // Stop the soldier
         targetSoldier.StopForAssassination();
@@ -93,6 +93,7 @@ public class AssassinationController : MonoBehaviour
         // Calculate position behind the soldier
         Vector3 soldierForward = targetSoldier.transform.forward;
         Vector3 positionBehindSoldier = targetSoldier.transform.position - (soldierForward * teleportOffset);
+        Debug.Log("Position behind soldier: " + soldierForward);
 
         // Teleport player behind soldier
         transform.position = positionBehindSoldier;
@@ -101,15 +102,13 @@ public class AssassinationController : MonoBehaviour
         transform.rotation = Quaternion.LookRotation(soldierForward);
 
         // Store pistol state
-        if (pistol != null)
-        {
+        if (pistol != null) {
             wasPistolActive = pistol.activeSelf;
             pistol.SetActive(false);
         }
 
         // Show knife before assassination
-        if (m9Knife != null)
-        {
+        if (m9Knife != null) {
             m9Knife.SetActive(true);
         }
 
@@ -117,24 +116,30 @@ public class AssassinationController : MonoBehaviour
         playerAnimator.SetTrigger("Assassinate");
 
         // Wait for animation to complete (approximate time)
-        yield return new WaitForSeconds(1.5f);
+        yield return new WaitForSeconds(0.75f);
 
         // Kill the soldier
         targetSoldier.characterDie();
 
+        // Wait for animation to complete (approximate time)
+        yield return new WaitForSeconds(1.25f);
+
         // Hide knife after assassination is complete
-        if (m9Knife != null)
-        {
+        if (m9Knife != null) {
             m9Knife.SetActive(false);
         }
 
         // Restore pistol to original state if it was active
-        if (pistol != null && wasPistolActive)
-        {
+        if (pistol != null && wasPistolActive) {
             pistol.SetActive(true);
         }
 
-        // Re-enable player movement
-        playerMovement.enabled = true;
+        // End assassination state
+        isAssassinating = false;
+    }
+
+    // Add this method to be called from other scripts that need to check if assassination is in progress
+    public bool IsAssassinating() {
+        return isAssassinating;
     }
 }

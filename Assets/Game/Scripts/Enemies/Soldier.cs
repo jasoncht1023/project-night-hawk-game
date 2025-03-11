@@ -2,8 +2,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.AI;
 
-public class Soldier : MonoBehaviour
-{
+public class Soldier : MonoBehaviour {
     [Header("Character Info")]
     public float walkingSpeed;
     public float runningSpeed;
@@ -65,8 +64,7 @@ public class Soldier : MonoBehaviour
     public ParticleSystem muzzleFlash;
     public GameObject bloodEffect;
 
-    private void Start()
-    {
+    private void Start() {
         currentMovingSpeed = walkingSpeed;
         currentHealth = characterHealth;
         playerBody = GameObject.Find("Player");
@@ -79,8 +77,7 @@ public class Soldier : MonoBehaviour
         chaseStopRotationPivot = transform.rotation;
     }
 
-    private void Update()
-    {
+    private void Update() {
         // Skip AI processing if being assassinated
         if (isBeingAssassinated) return;
 
@@ -88,26 +85,20 @@ public class Soldier : MonoBehaviour
 
         bool playerInVision = detectionSensor.Filter("Player", 1).Count != 0 ? true : false;
 
-        if (playerInVision)
-        {
+        if (playerInVision) {
             playerLastSeenPosition = playerBody.transform.position;
         }
 
-        if (isAlerted == true)
-        {
-            if (Time.time > alertEndTime)
-            {
+        if (isAlerted == true) {
+            if (Time.time > alertEndTime) {
                 isAlerted = false;
                 enemyUIManager.DisableAllUI();
             }
 
-            if (playerInVision == true)
-            {               // Go directly in fight if soldier sees player while alerted
+            if (playerInVision == true) {               // Go directly in fight if soldier sees player while alerted
                 isEngaged = true;
                 isAlerted = false;
-            }
-            else
-            {                                      // Stay in position while alerted
+            } else {                                      // Stay in position while alerted
                 StopAllMovement();
 
                 // Loop rotation in a 90 degrees sector to try scanning the player
@@ -116,63 +107,45 @@ public class Soldier : MonoBehaviour
             }
         }
 
-        if (isEngaged)
-        {
+        if (isEngaged) {
             enemyUIManager.DisableAllUI();
             enemyUIManager.SetEngagedActive(true);
 
             // Notify nearby soldiers in overlap sphere if found player
             Collider[] soldiers = Physics.OverlapSphere(transform.position, alertAllyRadius, soldierLayer);
-            foreach (Collider soldierCollider in soldiers)
-            {
+            foreach (Collider soldierCollider in soldiers) {
                 Soldier soldier = soldierCollider.GetComponent<Soldier>();
-                if (soldier != null)
-                {
+                if (soldier != null) {
                     soldier.AlertSoldier(playerLastSeenPosition);
                 }
             }
         }
 
-        if (!isEngaged && !isAlerted)
-        {
+        if (!isEngaged && !isAlerted) {
             // Update dection value
-            if (playerInVision == true)
-            {
+            if (playerInVision == true) {
                 detectionProgress = Mathf.Clamp01(detectionProgress + Time.deltaTime / detectTime);
-            }
-            else if (detectionProgress > 0)
-            {
+            } else if (detectionProgress > 0) {
                 detectionProgress = Mathf.Clamp01(detectionProgress - Time.deltaTime / detectTime);
             }
 
-            if (detectionProgress == 0)
-            {
+            if (detectionProgress == 0) {
                 enemyUIManager.SetDetectionSliderActive(false);
-                if (waypoints.Count > 1)
-                {
+                if (waypoints.Count > 1) {
                     Patrol();
-                }
-                else
-                {
-                    if (Vector3.Distance(transform.position, waypoints[currentWaypointIndex].position) < 0.15f)
-                    {
+                } else {
+                    if (Vector3.Distance(transform.position, waypoints[currentWaypointIndex].position) < 0.15f) {
                         transform.position = waypoints[currentWaypointIndex].position;
                         transform.rotation = waypoints[currentWaypointIndex].rotation;
                         StopAllMovement();
-                    }
-                    else
-                    {
+                    } else {
                         WalkToNextWaypoint();
                     }
                 }
-            }
-            else if (detectionProgress == 1)
-            {                  // Engage in gun fight when detection progress is full
+            } else if (detectionProgress == 1) {                  // Engage in gun fight when detection progress is full
                 detectionProgress = 0;
                 isEngaged = true;
-            }
-            else
-            {                                              // 0 < detection progress < 1, update detection slider
+            } else {                                              // 0 < detection progress < 1, update detection slider
                 StopAllMovement();
 
                 enemyUIManager.SetDetectionSliderActive(true);
@@ -184,11 +157,9 @@ public class Soldier : MonoBehaviour
             }
         }
 
-        if (isEngaged && (!playerInVision || !playerInShootingRadius) && Time.time > nextChaseTime)
-        {
+        if (isEngaged && (!playerInVision || !playerInShootingRadius) && Time.time > nextChaseTime) {
             ChasePlayer();
-            if (Vector3.Distance(transform.position, playerLastSeenPosition) <= 0.3f)
-            {
+            if (Vector3.Distance(transform.position, playerLastSeenPosition) <= 0.3f) {
                 isEngaged = false;
                 isAlerted = true;
                 alertEndTime = Time.time + alertTimeout;
@@ -196,16 +167,13 @@ public class Soldier : MonoBehaviour
                 enemyUIManager.SetAlertedActive(true);
                 chaseStopRotationPivot = transform.rotation;
             }
-        }
-        else if (isEngaged && playerInVision)
-        {
+        } else if (isEngaged && playerInVision) {
             nextChaseTime = Time.time + chasingCooldown;
             ShootPlayer();
         }
     }
 
-    public void StopForAssassination()
-    {
+    public void StopForAssassination() {
         isBeingAssassinated = true;
         currentMovingSpeed = 0f;
 
@@ -213,40 +181,29 @@ public class Soldier : MonoBehaviour
         animator.SetBool("Run", false);
         animator.SetBool("Walk", false);
         animator.SetBool("Scope", false);
-
-        // Disable UI indicators
-        engageImage.SetActive(false);
-        spottedImage.SetActive(false);
     }
 
-    public void AlertSoldier(Vector3 playerPosition)
-    {
+    public void AlertSoldier(Vector3 playerPosition) {
         playerLastSeenPosition = playerPosition;
         isEngaged = true;
     }
 
-    private void Patrol()
-    {
+    private void Patrol() {
         WalkToNextWaypoint();
 
-        if (Vector3.Distance(transform.position, agent.destination) < 0.15f)
-        {
+        if (Vector3.Distance(transform.position, agent.destination) < 0.15f) {
             // Soldier moves from first way point to last way point
-            if (movingForward == true)
-            {
+            if (movingForward == true) {
                 currentWaypointIndex++;
-                if (currentWaypointIndex >= waypoints.Count)
-                {
+                if (currentWaypointIndex >= waypoints.Count) {
                     currentWaypointIndex = waypoints.Count - 1;
                     movingForward = false;
                 }
             }
             // Soldier moves from last way point to first way point
-            else
-            {
+            else {
                 currentWaypointIndex--;
-                if (currentWaypointIndex < 0)
-                {
+                if (currentWaypointIndex < 0) {
                     currentWaypointIndex = 0;
                     movingForward = true;
                 }
@@ -254,8 +211,7 @@ public class Soldier : MonoBehaviour
         }
     }
 
-    private void WalkToNextWaypoint()
-    {
+    private void WalkToNextWaypoint() {
         isRunning = false;
         Transform targetWaypoint = waypoints[currentWaypointIndex];
         Vector3 directionToWaypoint = (targetWaypoint.position - transform.position).normalized;
@@ -275,13 +231,11 @@ public class Soldier : MonoBehaviour
     }
 
     // For debug only
-    private void OnDrawGizmos()
-    {
+    private void OnDrawGizmos() {
         Gizmos.DrawLine(transform.position, playerLastSeenPosition);
     }
 
-    void ChasePlayer()
-    {
+    void ChasePlayer() {
         isRunning = true;
 
         agent.isStopped = false;
@@ -301,8 +255,7 @@ public class Soldier : MonoBehaviour
         HandleFootstepSound();
     }
 
-    void ShootPlayer()
-    {
+    void ShootPlayer() {
         currentMovingSpeed = 0f;
         isRunning = false;
 
@@ -316,24 +269,20 @@ public class Soldier : MonoBehaviour
         animator.SetBool("Walk", false);
         animator.SetBool("Scope", true);
 
-        if (firstShotDelay == true)
-        {
+        if (firstShotDelay == true) {
             Invoke(nameof(AllowShooting), timeForFirstShotDelay);
             firstShotDelay = false;
         }
 
-        if (shootingCooldown == false)
-        {
+        if (shootingCooldown == false) {
             animator.SetTrigger("Fire");
             RaycastHit hit;
             muzzleFlash.Play();
             soundAudioSource.PlayOneShot(fireSoundClip);
 
-            if (Physics.Raycast(shootingRaycastPosition.transform.position, shootingRaycastPosition.transform.forward, out hit, shootingRange))
-            {
+            if (Physics.Raycast(shootingRaycastPosition.transform.position, shootingRaycastPosition.transform.forward, out hit, shootingRange)) {
                 PlayerMovement player = hit.transform.GetComponent<PlayerMovement>();
-                if (player != null)
-                {
+                if (player != null) {
                     player.characterHitDamage(damage);
                     GameObject bloodEffectGo = Instantiate(bloodEffect, hit.point, Quaternion.LookRotation(hit.normal));
                     Destroy(bloodEffectGo, 1f);
@@ -346,13 +295,11 @@ public class Soldier : MonoBehaviour
         }
     }
 
-    private void AllowShooting()
-    {
+    private void AllowShooting() {
         shootingCooldown = false;
     }
 
-    private void StopAllMovement()
-    {
+    private void StopAllMovement() {
         animator.SetBool("Run", false);
         animator.SetBool("Walk", false);
         animator.SetBool("Scope", false);
@@ -362,19 +309,16 @@ public class Soldier : MonoBehaviour
         currentMovingSpeed = 0f;
     }
 
-    public void characterHitDamage(float takeDamage)
-    {
+    public void characterHitDamage(float takeDamage) {
         isEngaged = true;
         currentHealth -= takeDamage;
 
-        if (currentHealth <= 0)
-        {
+        if (currentHealth <= 0) {
             characterDie();
         }
     }
 
-    public void characterDie()
-    {
+    public void characterDie() {
         animator.SetBool("BodyShotDie", true);
 
         currentMovingSpeed = 0f;
@@ -382,8 +326,7 @@ public class Soldier : MonoBehaviour
 
         // Disable all the colliders in the soldier
         Collider[] colliders = GetComponentsInChildren<Collider>();
-        foreach (Collider collider in colliders)
-        {
+        foreach (Collider collider in colliders) {
             collider.enabled = false;
         }
 
@@ -394,22 +337,16 @@ public class Soldier : MonoBehaviour
         enemyUIManager.DisableAllUI();
     }
 
-    private void HandleFootstepSound()
-    {
-        if (soundAudioSource != null && footstepClip != null)
-        {
+    private void HandleFootstepSound() {
+        if (soundAudioSource != null && footstepClip != null) {
             float footstepInterval = 0f;
-            if (isRunning == true)
-            {
+            if (isRunning == true) {
                 footstepInterval = runningFootstepInterval;
-            }
-            else
-            {
+            } else {
                 footstepInterval = walkingFootstepInterval;
             }
 
-            if (Time.time >= nextFootstepTime)
-            {
+            if (Time.time >= nextFootstepTime) {
                 soundAudioSource.PlayOneShot(footstepClip);
                 nextFootstepTime = Time.time + footstepInterval;
             }
