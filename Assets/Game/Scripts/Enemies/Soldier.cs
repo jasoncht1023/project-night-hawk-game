@@ -84,7 +84,6 @@ public class Soldier : MonoBehaviour
         // Skip AI processing if being assassinated
         if (isBeingAssassinated) return;
 
-        playerInVisionRadius = Physics.CheckSphere(transform.position, visionRadius, PlayerLayer);
         playerInShootingRadius = Physics.CheckSphere(transform.position, shootingRadius, PlayerLayer);
 
         bool playerInVision = detectionSensor.Filter("Player", 1).Count != 0 ? true : false;
