@@ -4,6 +4,8 @@ using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.InputSystem.HID;
 using System.Collections;
+using UnityEngine.AI;
+using System;
 
 public class Soldier : MonoBehaviour {
     [Header("Character Info")]
@@ -29,20 +31,16 @@ public class Soldier : MonoBehaviour {
     public float shootingRadius;
     public bool playerInVisionRadius;
     public bool playerInShootingRadius;
+    private NavMeshAgent agent;
 
     [Header("Soldier Shooting Var")]
     public int damage = 25;
     public float shootingRange = 100f;
-    public GameObject shootingRaycastArea;
+    public GameObject shootingRaycastPosition;
     public float timeBetweenShooting;
     bool shootingCooldown = true;
     private bool firstShotDelay = true;
     float timeForFirstShotDelay = 1f;
-
-    [Header("Character Controller and Gravity")]
-    CharacterController characterController;
-    public float gravity = 9.81f;
-    private Vector3 velocity;
 
     public bool isAlerted = false;
 
@@ -67,10 +65,10 @@ public class Soldier : MonoBehaviour {
         currentMovingSpeed = walkingSpeed;
         currentHealth = characterHealth;
         playerBody = GameObject.Find("Player");
-        characterController = GetComponent<CharacterController>();
         deadBodyPickup = GetComponent<DeadBodyPickup>();
         deadBodyPickup.enabled = false;                     // Disable picking up soldiers when they are alive
         soundAudioSource = GetComponent<AudioSource>();
+        agent = GetComponent<NavMeshAgent>();
     }
 
     private void Update() {
@@ -123,9 +121,9 @@ public class Soldier : MonoBehaviour {
         isRunning = false;
         Transform targetWaypoint = waypoints[currentWaypointIndex];
         Vector3 directionToWaypoint = (targetWaypoint.position - transform.position).normalized;
-        Vector3 moveVector = directionToWaypoint * walkingSpeed * Time.deltaTime;
 
-        characterController.Move(moveVector);
+        agent.destination = targetWaypoint.position;
+        agent.speed = walkingSpeed;
 
         Vector3 lookDirection = new Vector3(directionToWaypoint.x, 0, directionToWaypoint.z);
         transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(lookDirection), Time.deltaTime * turningSpeed);
@@ -136,7 +134,7 @@ public class Soldier : MonoBehaviour {
 
         HandleFootstepSound();
 
-        if (Vector3.Distance(transform.position, targetWaypoint.position) < 0.1f) {
+        if (Vector3.Distance(transform.position, agent.destination) < 0.15f) {
             // Soldier moves from first way point to last way point
             if (movingForward == true) {
                 currentWaypointIndex++;
@@ -158,12 +156,13 @@ public class Soldier : MonoBehaviour {
 
     void ChasePlayer() {
         isRunning = true;
-        Vector3 directionToPlayer = (playerBody.transform.position - transform.position).normalized;
-        Vector3 moveVector = directionToPlayer * currentMovingSpeed * Time.deltaTime;
 
-        characterController.Move(moveVector);
+        agent.isStopped = false;
+        agent.destination = playerBody.transform.position;
+        agent.speed = currentMovingSpeed * Time.deltaTime;
+        Vector3 movingDirection = agent.velocity;
 
-        Vector3 lookDirection = new Vector3(directionToPlayer.x, 0, directionToPlayer.z);
+        Vector3 lookDirection = new Vector3(movingDirection.x, 0, movingDirection.z);
         transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(lookDirection), Time.deltaTime * turningSpeed);
 
         animator.SetBool("Run", true);
@@ -183,6 +182,8 @@ public class Soldier : MonoBehaviour {
         Vector3 lookDirection = new Vector3(directionToPlayer.x, 0, directionToPlayer.z);
         transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(lookDirection), Time.deltaTime * turningSpeed);
 
+        agent.isStopped = true;
+
         animator.SetBool("Run", false);
         animator.SetBool("Walk", false);
         animator.SetBool("Scope", true);
@@ -198,7 +199,7 @@ public class Soldier : MonoBehaviour {
             muzzleFlash.Play();
             soundAudioSource.PlayOneShot(fireSoundClip);
 
-            if (Physics.Raycast(shootingRaycastArea.transform.position, shootingRaycastArea.transform.forward, out hit, shootingRange)) {
+            if (Physics.Raycast(shootingRaycastPosition.transform.position, shootingRaycastPosition.transform.forward, out hit, shootingRange)) {
                 PlayerMovement player = hit.transform.GetComponent<PlayerMovement>();
                 if (player != null) {
                     player.characterHitDamage(damage);
@@ -233,6 +234,12 @@ public class Soldier : MonoBehaviour {
 
         currentMovingSpeed = 0f;
         shootingRange = 0;
+
+        // Disable all the colliders in the soldier
+        Collider[] colliders = GetComponentsInChildren<Collider>();
+        foreach (Collider collider in colliders) {
+            collider.enabled = false;
+        }
 
         this.enabled = false;
         deadBodyPickup.enabled = true;

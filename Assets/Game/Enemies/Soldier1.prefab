@@ -1066,7 +1066,6 @@ MonoBehaviour:
   shootingRange: 100
   shootingRaycastArea: {fileID: 2659916215281542523}
   timeBetweenShooting: 3
-  gravity: 9.81
   isAlerted: 0
   engageImage: {fileID: 8479208925187882261}
   spottedImage: {fileID: 5841398557021643183}
