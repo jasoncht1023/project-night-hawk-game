@@ -11,8 +11,6 @@ public class GameManager : MonoBehaviour {
 
     private string scopeAnimationBool = "ScopeActive";
 
-    public float alertRadius = 20f;
-    public LayerMask soldierLayer;
     GameObject player;
 
     private void Start() {
@@ -40,24 +38,5 @@ public class GameManager : MonoBehaviour {
         else {
             animator.SetBool(scopeAnimationBool, false);
         }
-        CheckAlertRadius();
     }
-
-    // Enemies notify nearby soldiers in overlap sphere if found player
-    void AlertNearbySoldiers() {
-        Collider[] soldiers = Physics.OverlapSphere(player.transform.position, alertRadius, soldierLayer);
-        foreach(Collider soldierCollider in soldiers) {
-            Soldier soldier = soldierCollider.GetComponent<Soldier>();
-            if (soldier != null) {
-                soldier.AlertSoldier();
-            }
-        }
-    }
-
-    void CheckAlertRadius() {
-        if (pistol.activeSelf) {
-            AlertNearbySoldiers();
-        }
-    }
-
 }
