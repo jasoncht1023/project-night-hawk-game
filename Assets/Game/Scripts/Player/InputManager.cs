@@ -28,6 +28,7 @@ public class InputManager : MonoBehaviour {
     public bool switchWeaponInput;
     public bool pauseGameInput;
     public bool interactInput;
+    public bool assassinateInput;
 
     private void Awake() {
         animatorManager = GetComponent<AnimatorManager>();
@@ -50,6 +51,8 @@ public class InputManager : MonoBehaviour {
             playerControls.PlayerActions.SwitchWeapon.performed += i => switchWeaponInput = true;
             playerControls.PlayerActions.PauseGame.performed += i => pauseGameInput = true;
             playerControls.PlayerActions.Interact.performed += i => interactInput = true;
+            playerControls.PlayerActions.Assassinate.performed += i => assassinateInput = true;
+            playerControls.PlayerActions.Assassinate.canceled += i => assassinateInput = false;
         }
         playerControls.Enable();
     }
@@ -63,6 +66,13 @@ public class InputManager : MonoBehaviour {
         //HandleSprintingInput();
         HandlePauseGameInput();
         StartCoroutine(HandleInteractInput());
+        HandleAssassinateInput();
+    }
+
+    private void HandleAssassinateInput() {
+        if (assassinateInput) {
+            // The actual assassination logic will be handled by the AssassinationController
+        }
     }
 
     private void HandleMovementInput() {

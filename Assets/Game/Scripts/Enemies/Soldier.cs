@@ -14,6 +14,7 @@ public class Soldier : MonoBehaviour {
     private float characterHealth = 20f;
     public float currentHealth;
     private bool isRunning;
+    private bool isBeingAssassinated = false;
 
     [Header("Destination Var")]
     public Animator animator;
@@ -73,6 +74,9 @@ public class Soldier : MonoBehaviour {
     }
 
     private void Update() {
+        // Skip AI processing if being assassinated
+        if (isBeingAssassinated) return;
+        
         playerInVisionRadius = Physics.CheckSphere(transform.position, visionRadius, PlayerLayer);
         playerInShootingRadius = Physics.CheckSphere(transform.position, shootingRadius, PlayerLayer);
         
@@ -93,6 +97,20 @@ public class Soldier : MonoBehaviour {
             spottedImage.SetActive(false);
             visionRadius = 155f;
         }
+    }
+    
+    public void StopForAssassination() {
+        isBeingAssassinated = true;
+        currentMovingSpeed = 0f;
+        
+        // Stop all animations
+        animator.SetBool("Run", false);
+        animator.SetBool("Walk", false);
+        animator.SetBool("Scope", false);
+        
+        // Disable UI indicators
+        engageImage.SetActive(false);
+        spottedImage.SetActive(false);
     }
 
     public void AlertSoldier() {
