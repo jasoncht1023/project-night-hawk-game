@@ -6,8 +6,8 @@ public class FiringController : MonoBehaviour {
     public float fireRate = 0.8f;
     public float reloadTime = 3f;
     public int magazineCapacity = 8;
-    public int maxAmmo = 40;
-    public float fireRange = 40f;
+    public int maxAmmo = 24;
+    public float fireRange = 35f;
     public float damage = 5f;
 
     private float nextFireTime;
