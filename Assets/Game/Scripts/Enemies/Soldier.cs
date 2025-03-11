@@ -147,11 +147,14 @@ public class Soldier : MonoBehaviour {
                 isEngaged = true;
             } 
             else {                                              // 0 < detection progress < 1, update detection slider
+                StopAllMovement();
+
+                enemyUIManager.SetDetectionSliderActive(true);
+                enemyUIManager.UpdateDetectionSlider(detectionProgress);
+
                 Vector3 directionToPlayer = (playerBody.transform.position - transform.position).normalized;
                 Vector3 lookDirection = new Vector3(directionToPlayer.x, 0, directionToPlayer.z);
-                transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(lookDirection), Time.deltaTime * turningSpeed);
-
-                StopAllMovement();
+                transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(lookDirection), Time.deltaTime * turningSpeed);             
             } 
         }
 
@@ -219,6 +222,7 @@ public class Soldier : MonoBehaviour {
         HandleFootstepSound();
     }
 
+    // For debug only
     private void OnDrawGizmos() {
         Gizmos.DrawLine(transform.position, playerLastSeenPosition);
     }

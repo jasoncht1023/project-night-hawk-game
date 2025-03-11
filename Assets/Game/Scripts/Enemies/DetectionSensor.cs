@@ -100,6 +100,7 @@ public class DetectionSensor : MonoBehaviour {
         scanInterval = 1.0f / scanFrequnecy;
     }
 
+    // For debug only
     private void OnDrawGizmos() {
         if (mesh) {
             Gizmos.color = meshColor;
