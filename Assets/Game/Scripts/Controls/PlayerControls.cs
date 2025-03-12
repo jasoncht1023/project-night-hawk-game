@@ -247,15 +247,6 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""Assassinate"",
-                    ""type"": ""Button"",
-                    ""id"": ""aa84d0a7-1ce2-44b9-81a9-2dc15b7a502f"",
-                    ""expectedControlType"": """",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
                     ""name"": ""Crouch"",
                     ""type"": ""Button"",
                     ""id"": ""a1b2c3d4-e5f6-7890-abcd-ef1234567890"",
@@ -346,17 +337,6 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""9425de4b-f4cd-4e02-ab45-879b6fe89046"",
-                    ""path"": ""<Keyboard>/f"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Assassinate"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
                     ""id"": ""b2c3d4e5-f6g7-8901-abcd-ef1234567890"",
                     ""path"": ""<Keyboard>/ctrl"",
                     ""interactions"": """",
@@ -384,7 +364,6 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         m_PlayerActions_PauseGame = m_PlayerActions.FindAction("PauseGame", throwIfNotFound: true);
         m_PlayerActions_Reload = m_PlayerActions.FindAction("Reload", throwIfNotFound: true);
         m_PlayerActions_Interact = m_PlayerActions.FindAction("Interact", throwIfNotFound: true);
-        m_PlayerActions_Assassinate = m_PlayerActions.FindAction("Assassinate", throwIfNotFound: true);
         m_PlayerActions_Crouch = m_PlayerActions.FindAction("Crouch", throwIfNotFound: true);
     }
 
@@ -581,7 +560,6 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
     private readonly InputAction m_PlayerActions_PauseGame;
     private readonly InputAction m_PlayerActions_Reload;
     private readonly InputAction m_PlayerActions_Interact;
-    private readonly InputAction m_PlayerActions_Assassinate;
     private readonly InputAction m_PlayerActions_Crouch;
     /// <summary>
     /// Provides access to input actions defined in input action map "PlayerActions".
@@ -623,9 +601,6 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         /// </summary>
         public InputAction @Interact => m_Wrapper.m_PlayerActions_Interact;
         /// <summary>
-        /// Provides access to the underlying input action "PlayerActions/Assassinate".
-        /// </summary>
-        public InputAction @Assassinate => m_Wrapper.m_PlayerActions_Assassinate;
         /// Provides access to the underlying input action "PlayerActions/Crouch".
         /// </summary>
         public InputAction @Crouch => m_Wrapper.m_PlayerActions_Crouch;
@@ -676,9 +651,6 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @Interact.started += instance.OnInteract;
             @Interact.performed += instance.OnInteract;
             @Interact.canceled += instance.OnInteract;
-            @Assassinate.started += instance.OnAssassinate;
-            @Assassinate.performed += instance.OnAssassinate;
-            @Assassinate.canceled += instance.OnAssassinate;
             @Crouch.started += instance.OnCrouch;   
             @Crouch.performed += instance.OnCrouch;
             @Crouch.canceled += instance.OnCrouch;
@@ -714,9 +686,6 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @Interact.started -= instance.OnInteract;
             @Interact.performed -= instance.OnInteract;
             @Interact.canceled -= instance.OnInteract;
-            @Assassinate.started -= instance.OnAssassinate;
-            @Assassinate.performed -= instance.OnAssassinate;
-            @Assassinate.canceled -= instance.OnAssassinate;
             @Crouch.started -= instance.OnCrouch;    
             @Crouch.performed -= instance.OnCrouch;
             @Crouch.canceled -= instance.OnCrouch;
@@ -831,13 +800,6 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnInteract(InputAction.CallbackContext context);
-        /// <summary>
-        /// Method invoked when associated input action "Assassinate" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
-        /// </summary>
-        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
-        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
-        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
-        void OnAssassinate(InputAction.CallbackContext context);
         
         void OnCrouch(InputAction.CallbackContext context);
     }
