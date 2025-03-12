@@ -5,7 +5,6 @@ public class PlayerMovement : MonoBehaviour {
     InputManager inputManager;
     CameraManager cameraManager;
     PlayerUIManager playerUIManager;
-    private AssassinationController assassinationController;
 
     [Header("Movement")]
     private int characterHealth = 100;
@@ -49,7 +48,6 @@ public class PlayerMovement : MonoBehaviour {
         playerUIManager = GetComponent<PlayerUIManager>();
         playerRigidbody = GetComponent<Rigidbody>();
         currentHealth = characterHealth;
-        assassinationController = GetComponent<AssassinationController>();
     }
 
     private void Start() {
@@ -61,17 +59,19 @@ public class PlayerMovement : MonoBehaviour {
         float footstepInterval = 0f;
         if (isRunning == true) {
             footstepInterval = runningFootstepInterval;
-        } else if (isCarrying == false) {
+        }
+        else if (isCarrying == false) {
             footstepInterval = walkingFootstepInterval;
-        } else {
+        }
+        else {
             footstepInterval = carryWalkingFootstepInterval;
         }
-      
+        
         if ((isWalking || isRunning) && isGrounded && Time.time >= nextFootstepTime) {
             PlayFootStepSound();
             nextFootstepTime = Time.time + footstepInterval;
         }
-        if (inputManager.sprintInput == false || inputManager.movementInput == new Vector2(0, 0)) {
+        if (inputManager.sprintInput == false || inputManager.movementInput == new Vector2(0,0)) {
             isRunning = false;
         }
 
@@ -84,13 +84,6 @@ public class PlayerMovement : MonoBehaviour {
     }
 
     void HandleMovement() {
-        // Skip movement if assassinating
-        if (assassinationController != null && assassinationController.IsAssassinating()) {
-            isWalking = false;
-            isRunning = false;
-            return;
-        }
-
         moveDirection = camObject.forward * inputManager.verticalInput;
         moveDirection += camObject.right * inputManager.horizontalInput;
         moveDirection.Normalize();                          // Ensure constant speed regardless of direction
@@ -100,16 +93,19 @@ public class PlayerMovement : MonoBehaviour {
             if (inputManager.sprintInput == true && isReloading == false && isCarrying == false && cameraManager.isScoped == false) {
                 isRunning = true;
                 moveDirection = moveDirection * runningSpeed;
-            } else {
+            }
+            else {
                 isRunning = false;
                 isWalking = true;
                 if (isCarrying == false) {
                     moveDirection = moveDirection * walkingSpeed;
-                } else {
+                }
+                else {
                     moveDirection = moveDirection * carryWalkingSpeed;
                 }
             }
-        } else {
+        }
+        else {
             isWalking = false;
         }
 
@@ -120,7 +116,7 @@ public class PlayerMovement : MonoBehaviour {
     }
 
     void HandleRotation() {
-        if (cameraManager.isScoped || (assassinationController != null && assassinationController.IsAssassinating()))
+        if (cameraManager.isScoped)
             return;
 
         Vector3 targetDirection = Vector3.zero;
