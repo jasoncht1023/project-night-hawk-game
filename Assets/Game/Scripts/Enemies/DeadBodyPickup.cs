@@ -3,24 +3,28 @@ using UnityEngine.AI;
 
 public class DeadBodyPickup : MonoBehaviour {
     InputManager inputManager;
-    public Transform player;
+    private Transform playerTransfrom;
     public Transform deadBodyPickArea;
-    public Transform holdPosition;
+    private Transform holdPosition;
     public float pickupRange = 1.5f;
     public float gravity = 9.81f;
     public float fallingSpeedMultiplier = 2f;
     public bool isPickedUp = false;
     NavMeshAgent agent;
     Vector3 velocity;
-    public Animator playerAnimator;
-
+    Animator playerAnimator;
     PlayerMovement playerMovement;
-    public GameObject pistol;
+    GameManager gameManager;
 
     private void Start() {
-        inputManager = FindFirstObjectByType<InputManager>();
         agent = GetComponent<NavMeshAgent>();
-        playerMovement = FindFirstObjectByType<PlayerMovement>();
+        GameObject playerObject = GameObject.Find("Player");
+        playerTransfrom = playerObject.transform;
+        inputManager = playerObject.GetComponent<InputManager>();
+        playerMovement = playerObject.GetComponent<PlayerMovement>();
+        gameManager = playerObject.GetComponent<GameManager>();
+        playerAnimator = playerObject.GetComponent<Animator>();
+        holdPosition = GameObject.FindGameObjectWithTag("PlayerCarryDeadbodyPosition").transform;
     }
 
     private void Update() {
@@ -29,7 +33,7 @@ public class DeadBodyPickup : MonoBehaviour {
                 DetachBody();
                 playerMovement.SetCarrying(false);
             }
-            else if (playerMovement.isCarrying == false && Vector3.Distance(player.position, transform.position) <= pickupRange && Time.time >= playerMovement.nextPickupTime) {
+            else if (playerMovement.isCarrying == false && Vector3.Distance(playerTransfrom.position, transform.position) <= pickupRange && Time.time >= playerMovement.nextPickupTime) {
                 playerMovement.SetCarrying(true);
                 AttachBody();
             }
@@ -38,10 +42,10 @@ public class DeadBodyPickup : MonoBehaviour {
 
     void AttachBody() {
         isPickedUp = true;
-        pistol.SetActive(false);
+        gameManager.DisablePistol();
         agent.enabled = false;
         transform.position = holdPosition.position - (deadBodyPickArea.position - transform.position);
-        transform.parent = player;
+        transform.parent = playerTransfrom;
 
         transform.position = holdPosition.position;
         transform.rotation = holdPosition.rotation;
