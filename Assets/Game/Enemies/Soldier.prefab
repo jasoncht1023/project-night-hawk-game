@@ -1591,7 +1591,6 @@ MonoBehaviour:
   waypoints:
   - {fileID: 0}
   - {fileID: 0}
-  - {fileID: 0}
   PlayerLayer:
     serializedVersion: 2
     m_Bits: 8
@@ -1629,15 +1628,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3cad06523c3cd1145a0fbda2c75c3360, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player: {fileID: 0}
   deadBodyPickArea: {fileID: 6819534717577807774}
-  holdPosition: {fileID: 0}
   pickupRange: 1.5
   gravity: 9.81
   fallingSpeedMultiplier: 2
   isPickedUp: 0
-  playerAnimator: {fileID: 0}
-  pistol: {fileID: 0}
 --- !u!114 &6267982767871957510
 MonoBehaviour:
   m_ObjectHideFlags: 0

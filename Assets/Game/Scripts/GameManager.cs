@@ -9,6 +9,15 @@ public class GameManager : MonoBehaviour {
     public GameObject pistol;
     public Animator animator;
 
+    [Header("Sound Effects")]
+    public AudioSource playerAudioSource;
+    public AudioClip detectedSoundClip;
+    public AudioClip engagedSoundClip;
+    public float detectedSoundInterval = 3f;
+    public float engagedSoundInterval = 5f;
+    private float nextDetectedSoundTime;
+    private float nextEngagedSoundTime;
+
     private string scopeAnimationBool = "ScopeActive";
 
     GameObject player;
@@ -16,6 +25,7 @@ public class GameManager : MonoBehaviour {
     private void Start() {
         inputManager = FindFirstObjectByType<InputManager>();
         player = GameObject.FindGameObjectWithTag("Player");
+        playerAudioSource = GetComponent<AudioSource>();
         pistol.SetActive(false);
     }
 
@@ -37,6 +47,24 @@ public class GameManager : MonoBehaviour {
         }
         else {
             animator.SetBool(scopeAnimationBool, false);
+        }
+    }
+
+    public void DisablePistol() {
+        pistol.SetActive(false);
+    }
+
+    public void PlayDetectedSound() {
+        if (Time.time > nextDetectedSoundTime) {
+            playerAudioSource.PlayOneShot(detectedSoundClip);
+            nextDetectedSoundTime = Time.time + detectedSoundInterval;
+        }
+    }
+
+    public void PlayEngagedSound() {
+        if (Time.time > nextEngagedSoundTime) {
+            playerAudioSource.PlayOneShot(engagedSoundClip);
+            nextEngagedSoundTime = Time.time + engagedSoundInterval;
         }
     }
 }

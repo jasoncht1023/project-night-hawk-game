@@ -10,6 +10,10 @@ public class EnemyUIManager : MonoBehaviour {
     public GameObject engagedImage;
     public Slider detectionSlider;
 
+    private void Start() {
+        mainCamera = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();        
+    }
+
     private void Update() {
         if (mainCamera != null) {
             canvas.transform.LookAt(mainCamera.transform);

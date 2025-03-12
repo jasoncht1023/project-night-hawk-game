@@ -67,7 +67,7 @@ public class PlayerMovement : MonoBehaviour {
             footstepInterval = carryWalkingFootstepInterval;
         }
         
-        if (isWalking && isGrounded && Time.time >= nextFootstepTime) {
+        if ((isWalking || isRunning) && isGrounded && Time.time >= nextFootstepTime) {
             PlayFootStepSound();
             nextFootstepTime = Time.time + footstepInterval;
         }

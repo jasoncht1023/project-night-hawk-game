@@ -34,6 +34,7 @@ public class Soldier : MonoBehaviour {
     private Quaternion chaseStopRotationPivot;
     private GameObject playerBody;
     private NavMeshAgent agent;
+    private bool isPlayedDetectedSound = false;
 
     [Header("Soldier Shooting Var")]
     public int damage = 25;
@@ -50,6 +51,7 @@ public class Soldier : MonoBehaviour {
     DeadBodyPickup deadBodyPickup;
     DetectionSensor detectionSensor;
     EnemyUIManager enemyUIManager;
+    GameManager gameManager;
 
     [Header("Sound Effects")]
     public AudioSource soundAudioSource;
@@ -74,6 +76,7 @@ public class Soldier : MonoBehaviour {
         soundAudioSource = GetComponent<AudioSource>();
         agent = GetComponent<NavMeshAgent>();
         chaseStopRotationPivot = transform.rotation;
+        gameManager = playerBody.GetComponent<GameManager>();
     }
 
     private void Update() {
@@ -94,6 +97,7 @@ public class Soldier : MonoBehaviour {
             if (playerInVision == true) {               // Go directly in fight if soldier sees player while alerted
                 isEngaged = true;
                 isAlerted = false;
+                gameManager.PlayEngagedSound();
             }
             else {                                      // Stay in position while alerted
                 StopAllMovement();
@@ -109,11 +113,13 @@ public class Soldier : MonoBehaviour {
             enemyUIManager.SetEngagedActive(true);
 
             // Notify nearby soldiers in overlap sphere if found player
-            Collider[] soldiers = Physics.OverlapSphere(transform.position, alertAllyRadius, soldierLayer);
-            foreach (Collider soldierCollider in soldiers) {
-                Soldier soldier = soldierCollider.GetComponent<Soldier>();
-                if (soldier != null) {
-                    soldier.AlertSoldier(playerLastSeenPosition);
+            if (playerInVision) {
+                Collider[] soldiers = Physics.OverlapSphere(transform.position, alertAllyRadius, soldierLayer);
+                foreach (Collider soldierCollider in soldiers) {
+                    Soldier soldier = soldierCollider.GetComponent<Soldier>();
+                    if (soldier != null) {
+                        soldier.AlertSoldier(playerLastSeenPosition);
+                    }
                 }
             }
         }
@@ -122,12 +128,17 @@ public class Soldier : MonoBehaviour {
             // Update dection value
             if (playerInVision == true) {
                 detectionProgress = Mathf.Clamp01(detectionProgress + Time.deltaTime / detectTime);
+                if (isPlayedDetectedSound == false) {
+                    gameManager.PlayDetectedSound();
+                    isPlayedDetectedSound = true;
+                }
             } else if (detectionProgress > 0) {
                 detectionProgress = Mathf.Clamp01(detectionProgress - Time.deltaTime / detectTime);
             }
             
             if (detectionProgress == 0) {
                 enemyUIManager.SetDetectionSliderActive(false);
+                isPlayedDetectedSound = false;
                 if (waypoints.Count > 1) {
                     Patrol();
                 }
@@ -145,6 +156,7 @@ public class Soldier : MonoBehaviour {
             else if (detectionProgress == 1) {                  // Engage in gun fight when detection progress is full
                 detectionProgress = 0;
                 isEngaged = true;
+                gameManager.PlayEngagedSound();
             } 
             else {                                              // 0 < detection progress < 1, update detection slider
                 StopAllMovement();
@@ -160,7 +172,7 @@ public class Soldier : MonoBehaviour {
 
         if (isEngaged && (!playerInVision || !playerInShootingRadius) && Time.time > nextChaseTime) {
             ChasePlayer();
-            if (Vector3.Distance(transform.position, playerLastSeenPosition) <= 0.3f) {
+            if (Vector3.Distance(transform.position, playerLastSeenPosition) <= 1f) {
                 isEngaged = false;
                 isAlerted = true;
                 alertEndTime = Time.time + alertTimeout;
