@@ -54,7 +54,7 @@ public class AssassinationController : MonoBehaviour {
             foreach (var hitCollider in hitColliders) {
                 Soldier soldier = hitCollider.GetComponent<Soldier>();
 
-                if (soldier != null && soldier.enabled) // Only target active soldiers
+                if (soldier != null && soldier.enabled && !soldier.isEngaged) // Only target active soldiers
                 {
                     float distance = Vector3.Distance(transform.position, soldier.transform.position);
 
@@ -69,7 +69,6 @@ public class AssassinationController : MonoBehaviour {
     }
 
     private void HandleAssassination() {
-        Debug.Log("Assassination check: " + canAssassinate);
         if (canAssassinate && inputManager.assassinateInput && !isAssassinating) {
             inputManager.assassinateInput = false; // Reset input
             StartCoroutine(PerformAssassination());
