@@ -185,17 +185,8 @@ public class Soldier : MonoBehaviour {
         }
     }
 
-    public void StopForAssassination() {
+    public void SetAssassinated() {
         isBeingAssassinated = true;
-        currentMovingSpeed = 0f;
-
-        agent.isStopped = true;
-        agent.speed = 0f;
-
-        // Stop all animations
-        animator.SetBool("Run", false);
-        animator.SetBool("Walk", false);
-        animator.SetBool("Scope", false);
     }
 
     public void AlertSoldier(Vector3 playerPosition) {
@@ -314,7 +305,7 @@ public class Soldier : MonoBehaviour {
         shootingCooldown = false;
     }
 
-    private void StopAllMovement() {
+    public void StopAllMovement() {
         animator.SetBool("Run", false);
         animator.SetBool("Walk", false);
         animator.SetBool("Scope", false);

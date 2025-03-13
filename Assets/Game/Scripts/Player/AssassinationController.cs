@@ -88,7 +88,8 @@ public class AssassinationController : MonoBehaviour {
         }
 
         // Stop the soldier
-        targetSoldier.StopForAssassination();
+        targetSoldier.SetAssassinated();
+        targetSoldier.StopAllMovement();
 
         // Calculate position behind the soldier
         Vector3 soldierForward = targetSoldier.transform.forward;
