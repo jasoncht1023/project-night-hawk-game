@@ -189,6 +189,9 @@ public class Soldier : MonoBehaviour {
         isBeingAssassinated = true;
         currentMovingSpeed = 0f;
 
+        agent.isStopped = true;
+        agent.speed = 0f;
+
         // Stop all animations
         animator.SetBool("Run", false);
         animator.SetBool("Walk", false);
