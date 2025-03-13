@@ -11,6 +11,7 @@ public class Soldier : MonoBehaviour {
     private float characterHealth = 20f;
     public float currentHealth;
     private bool isRunning;
+    private bool isBeingAssassinated = false;
 
     [Header("Destination Var")]
     public Animator animator;
@@ -80,6 +81,9 @@ public class Soldier : MonoBehaviour {
     }
 
     private void Update() {
+        // Skip AI processing if being assassinated
+        if (isBeingAssassinated) return;
+
         playerInShootingRadius = Physics.CheckSphere(transform.position, shootingRadius, PlayerLayer);
 
         bool playerInVision = detectionSensor.Filter("Player", 1).Count != 0 ? true : false;
@@ -98,12 +102,11 @@ public class Soldier : MonoBehaviour {
                 isEngaged = true;
                 isAlerted = false;
                 gameManager.PlayEngagedSound();
-            }
-            else {                                      // Stay in position while alerted
+            } else {                                      // Stay in position while alerted
                 StopAllMovement();
 
                 // Loop rotation in a 90 degrees sector to try scanning the player
-                float angle = Mathf.PingPong(Time.time * 20f, 90f) - 45f;               
+                float angle = Mathf.PingPong(Time.time * 20f, 90f) - 45f;
                 transform.rotation = chaseStopRotationPivot * Quaternion.Euler(0, angle, 0);
             }
         }
@@ -135,30 +138,26 @@ public class Soldier : MonoBehaviour {
             } else if (detectionProgress > 0) {
                 detectionProgress = Mathf.Clamp01(detectionProgress - Time.deltaTime / detectTime);
             }
-            
+
             if (detectionProgress == 0) {
                 enemyUIManager.SetDetectionSliderActive(false);
                 isPlayedDetectedSound = false;
                 if (waypoints.Count > 1) {
                     Patrol();
-                }
-                else {
+                } else {
                     if (Vector3.Distance(transform.position, waypoints[currentWaypointIndex].position) < 0.15f) {
                         transform.position = waypoints[currentWaypointIndex].position;
                         transform.rotation = waypoints[currentWaypointIndex].rotation;
                         StopAllMovement();
-                    }
-                    else {
+                    } else {
                         WalkToNextWaypoint();
                     }
                 }
-            }
-            else if (detectionProgress == 1) {                  // Engage in gun fight when detection progress is full
+            } else if (detectionProgress == 1) {                  // Engage in gun fight when detection progress is full
                 detectionProgress = 0;
                 isEngaged = true;
                 gameManager.PlayEngagedSound();
-            } 
-            else {                                              // 0 < detection progress < 1, update detection slider
+            } else {                                              // 0 < detection progress < 1, update detection slider
                 StopAllMovement();
 
                 enemyUIManager.SetDetectionSliderActive(true);
@@ -166,8 +165,8 @@ public class Soldier : MonoBehaviour {
 
                 Vector3 directionToPlayer = (playerBody.transform.position - transform.position).normalized;
                 Vector3 lookDirection = new Vector3(directionToPlayer.x, 0, directionToPlayer.z);
-                transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(lookDirection), Time.deltaTime * turningSpeed);             
-            } 
+                transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(lookDirection), Time.deltaTime * turningSpeed);
+            }
         }
 
         if (isEngaged && (!playerInVision || !playerInShootingRadius) && Time.time > nextChaseTime) {
@@ -180,11 +179,20 @@ public class Soldier : MonoBehaviour {
                 enemyUIManager.SetAlertedActive(true);
                 chaseStopRotationPivot = transform.rotation;
             }
-        } 
-        else if (isEngaged && playerInVision) {
+        } else if (isEngaged && playerInVision) {
             nextChaseTime = Time.time + chasingCooldown;
             ShootPlayer();
         }
+    }
+
+    public void StopForAssassination() {
+        isBeingAssassinated = true;
+        currentMovingSpeed = 0f;
+
+        // Stop all animations
+        animator.SetBool("Run", false);
+        animator.SetBool("Walk", false);
+        animator.SetBool("Scope", false);
     }
 
     public void AlertSoldier(Vector3 playerPosition) {
@@ -323,7 +331,11 @@ public class Soldier : MonoBehaviour {
     }
 
     public void characterDie() {
-        animator.SetBool("BodyShotDie", true);
+        if (isBeingAssassinated) {
+            animator.SetBool("StabDie", true);
+        } else {
+            animator.SetBool("BodyShotDie", true);
+        }
 
         currentMovingSpeed = 0f;
         shootingRange = 0;
@@ -346,8 +358,7 @@ public class Soldier : MonoBehaviour {
             float footstepInterval = 0f;
             if (isRunning == true) {
                 footstepInterval = runningFootstepInterval;
-            }
-            else {
+            } else {
                 footstepInterval = walkingFootstepInterval;
             }
 
