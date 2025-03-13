@@ -52,8 +52,6 @@ public class InputManager : MonoBehaviour {
             playerControls.PlayerActions.PauseGame.performed += i => pauseGameInput = true;
             playerControls.PlayerActions.Interact.performed += i => interactInput = true;
             playerControls.PlayerActions.Crouch.performed += i => crouchInput = true;
-            
-
         }
         playerControls.Enable();
     }
