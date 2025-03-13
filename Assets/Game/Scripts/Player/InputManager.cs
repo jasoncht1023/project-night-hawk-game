@@ -29,6 +29,7 @@ public class InputManager : MonoBehaviour {
     public bool pauseGameInput;
     public bool interactInput;
     public bool crouchInput;
+    public bool assassinateInput;
 
     private void Awake() {
         animatorManager = GetComponent<AnimatorManager>();
@@ -52,6 +53,8 @@ public class InputManager : MonoBehaviour {
             playerControls.PlayerActions.PauseGame.performed += i => pauseGameInput = true;
             playerControls.PlayerActions.Interact.performed += i => interactInput = true;
             playerControls.PlayerActions.Crouch.performed += i => crouchInput = true;
+            playerControls.PlayerActions.Assassinate.performed += i => assassinateInput = true;
+            playerControls.PlayerActions.Assassinate.canceled += i => assassinateInput = false;
         }
         playerControls.Enable();
     }
@@ -91,7 +94,7 @@ public class InputManager : MonoBehaviour {
         if (pauseGameInput == true) {
             pauseGameInput = false;
         }
-    } 
+    }
 
     public void SwitchWeaponDone() {
         switchWeaponInput = false;
