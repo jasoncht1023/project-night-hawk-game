@@ -120,6 +120,7 @@ GameObject:
   - component: {fileID: 3369804}
   - component: {fileID: 2317620}
   - component: {fileID: 6520022}
+  - component: {fileID: 4466896540731261698}
   m_Layer: 0
   m_Name: Struct_Fence1_Gate_A_Door_LOD0
   m_TagString: Untagged
@@ -216,6 +217,22 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 2.7636795, y: 4.082547, z: 0.2604421}
   m_Center: {x: -1.3377438, y: 2.0442548, z: 0.08132385}
+--- !u!208 &4466896540731261698
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 127120}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 1.3820001, y: 2.0410001, z: 0.13000001}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 1
+  m_Center: {x: -1.338, y: 2.0440001, z: 0.081}
+  m_TimeToStationary: 0.5
 --- !u!1 &135036
 GameObject:
   m_ObjectHideFlags: 0

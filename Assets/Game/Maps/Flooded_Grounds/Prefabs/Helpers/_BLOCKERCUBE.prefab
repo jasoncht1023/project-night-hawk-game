@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 2339290}
   - component: {fileID: 6562970}
   - component: {fileID: 114800394831905180}
+  - component: {fileID: -6887160936404271719}
   m_Layer: 0
   m_Name: _BLOCKERCUBE
   m_TagString: Untagged
@@ -121,3 +122,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 78b5e677f5c60e548a68ce75b82380be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!208 &-6887160936404271719
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 190712}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 5.0200005, y: 5.0200005, z: 5.0200005}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 1
+  m_Center: {x: -5, y: 5, z: 5}
+  m_TimeToStationary: 0.5

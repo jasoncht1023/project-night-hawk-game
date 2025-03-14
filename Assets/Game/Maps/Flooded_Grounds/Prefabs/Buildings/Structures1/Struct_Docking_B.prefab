@@ -12,12 +12,12 @@ GameObject:
   - component: {fileID: 3341372}
   - component: {fileID: 2333856}
   - component: {fileID: 6415180}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Struct_Docking_B_LOD2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!4 &442352
 Transform:
@@ -121,12 +121,12 @@ GameObject:
   - component: {fileID: 3304482}
   - component: {fileID: 2378088}
   - component: {fileID: 6478882}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Struct_Docking_B_LOD1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!4 &467776
 Transform:
@@ -228,12 +228,13 @@ GameObject:
   m_Component:
   - component: {fileID: 442760}
   - component: {fileID: 20532068}
-  m_Layer: 0
+  - component: {fileID: 4734355814978283087}
+  m_Layer: 7
   m_Name: Struct_Docking_B
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!4 &442760
 Transform:
@@ -280,6 +281,26 @@ LODGroup:
     renderers:
     - renderer: {fileID: 2333856}
   m_Enabled: 1
+--- !u!114 &4734355814978283087
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 129540}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e3fdca004f2d45fe8abbed571a8abd5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SerializedVersion: 0
+  m_OverrideArea: 1
+  m_Area: 0
+  m_OverrideGenerateLinks: 0
+  m_GenerateLinks: 0
+  m_IgnoreFromBuild: 0
+  m_ApplyToChildren: 1
+  m_AffectedAgents: ffffffff
 --- !u!1 &141306
 GameObject:
   m_ObjectHideFlags: 0
@@ -292,12 +313,12 @@ GameObject:
   - component: {fileID: 3340634}
   - component: {fileID: 2373116}
   - component: {fileID: 6407712}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Struct_Docking_B_LOD0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!4 &482226
 Transform:
