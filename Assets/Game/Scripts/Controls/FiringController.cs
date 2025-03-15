@@ -47,6 +47,7 @@ public class FiringController : MonoBehaviour {
 
         if (inputManager.reloadInput && currentMagazine < magazineCapacity && currentAmmo > 0 && isReloading == false) {
             StartCoroutine(Reload());
+            animator.SetBool("Crouching", false);
             animator.SetTrigger("Reloading");
         }
     }
@@ -121,5 +122,10 @@ public class FiringController : MonoBehaviour {
         }
         isReloading = false;
         playerMovement.SetReloading(isReloading);
+    }
+
+    public void LootAmmo(int ammo) {
+        currentAmmo += ammo;
+        playerUIManager.UpdateTotalAmmoCount(currentAmmo);
     }
 }

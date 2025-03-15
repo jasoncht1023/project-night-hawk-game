@@ -30,6 +30,7 @@ public class InputManager : MonoBehaviour {
     public bool interactInput;
     public bool crouchInput;
     public bool assassinateInput;
+    public bool lootInput;
 
     private void Awake() {
         animatorManager = GetComponent<AnimatorManager>();
@@ -55,6 +56,7 @@ public class InputManager : MonoBehaviour {
             playerControls.PlayerActions.Crouch.performed += i => crouchInput = true;
             playerControls.PlayerActions.Assassinate.performed += i => assassinateInput = true;
             playerControls.PlayerActions.Assassinate.canceled += i => assassinateInput = false;
+            playerControls.PlayerActions.Loot.performed += i => lootInput = true;
         }
         playerControls.Enable();
     }
@@ -64,10 +66,10 @@ public class InputManager : MonoBehaviour {
     }
 
     public void HandleAllInputs() {
-        HandleMovementInput();
-        //HandleSprintingInput();
+        HandleMovementInput();;
         HandlePauseGameInput();
         StartCoroutine(HandleInteractInput());
+        StartCoroutine(HandleLootInput());
     }
 
     private void HandleMovementInput() {
@@ -81,15 +83,6 @@ public class InputManager : MonoBehaviour {
         animatorManager.UpdateAnimationValues(horizontalInput, verticalInput, playerMovement.isRunning);
     }
 
-    //private void HandleSprintingInput() {
-    //    if (sprintInput == true && moveAmount > 0.5f) {
-    //        playerMovement.isRunning = true;
-    //    }
-    //    else {
-    //        playerMovement.isRunning = false;
-    //    }
-    //}
-
     private void HandlePauseGameInput() {
         if (pauseGameInput == true) {
             pauseGameInput = false;
@@ -100,10 +93,21 @@ public class InputManager : MonoBehaviour {
         switchWeaponInput = false;
     }
 
+    public void SwitchCrouchDone() {
+        crouchInput = false;
+    }
+
     IEnumerator HandleInteractInput() {
         yield return new WaitForSeconds(0.2f);
         if (interactInput) {
             interactInput = false;
+        }
+    }
+
+    IEnumerator HandleLootInput() {
+        yield return new WaitForSeconds(0.2f);
+        if (lootInput) {
+            lootInput = false;
         }
     }
 }

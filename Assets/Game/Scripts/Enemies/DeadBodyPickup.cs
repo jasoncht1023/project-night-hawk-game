@@ -15,6 +15,8 @@ public class DeadBodyPickup : MonoBehaviour {
     Animator playerAnimator;
     PlayerMovement playerMovement;
     GameManager gameManager;
+    private bool wasPistolActive;
+    private bool isLooted = false;
 
     private void Start() {
         agent = GetComponent<NavMeshAgent>();
@@ -38,11 +40,17 @@ public class DeadBodyPickup : MonoBehaviour {
                 AttachBody();
             }
         }
+
+        if (inputManager.lootInput == true && isPickedUp == false && isLooted == false && Vector3.Distance(playerTransfrom.position, transform.position) <= pickupRange) {
+            isLooted = true;
+            playerMovement.LootSoldier();
+        }
     }
 
     void AttachBody() {
         isPickedUp = true;
-        gameManager.DisablePistol();
+        wasPistolActive = gameManager.isPistolActive();
+        gameManager.SetPistolActive(false);
         agent.enabled = false;
         transform.position = holdPosition.position - (deadBodyPickArea.position - transform.position);
         transform.parent = playerTransfrom;
@@ -59,6 +67,8 @@ public class DeadBodyPickup : MonoBehaviour {
         isPickedUp = false;
         agent.enabled = true;
         transform.parent = null;
+
+        gameManager.SetPistolActive(wasPistolActive);
 
         playerAnimator.Play("Movement");
     }

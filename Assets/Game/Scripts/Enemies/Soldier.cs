@@ -58,6 +58,7 @@ public class Soldier : MonoBehaviour {
     public AudioSource soundAudioSource;
     public AudioClip fireSoundClip;
     public AudioClip footstepClip;
+    public AudioClip deathScreamClip;
     public float runningFootstepInterval = 0.35f;
     public float walkingFootstepInterval = 0.5f;
     private float nextFootstepTime;
@@ -187,6 +188,7 @@ public class Soldier : MonoBehaviour {
 
     public void SetAssassinated() {
         isBeingAssassinated = true;
+        soundAudioSource.PlayOneShot(deathScreamClip);
     }
 
     public void AlertSoldier(Vector3 playerPosition) {
@@ -317,6 +319,7 @@ public class Soldier : MonoBehaviour {
 
     public void characterHitDamage(float takeDamage) {
         isEngaged = true;
+        playerLastSeenPosition = playerBody.transform.position;
         currentHealth -= takeDamage;
 
         if (currentHealth <= 0) {
@@ -328,7 +331,7 @@ public class Soldier : MonoBehaviour {
         if (isBeingAssassinated) {
             animator.SetBool("StabDie", true);
         } else {
-            animator.SetBool("BodyShotDie", true);
+            animator.SetBool("ShotDie", true);
         }
 
         currentMovingSpeed = 0f;

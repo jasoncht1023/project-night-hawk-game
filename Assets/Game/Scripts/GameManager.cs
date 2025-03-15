@@ -43,6 +43,7 @@ public class GameManager : MonoBehaviour {
         }
         // Switch to scope animation when holding pistol and scope
         if (pistol.activeSelf == true && inputManager.scopeInput == true && playerMovement.isReloading == false) {
+            animator.SetBool("Crouching", false);
             animator.SetBool(scopeAnimationBool, true);
         }
         else {
@@ -50,8 +51,12 @@ public class GameManager : MonoBehaviour {
         }
     }
 
-    public void DisablePistol() {
-        pistol.SetActive(false);
+    public void SetPistolActive(bool isActive) {
+        pistol.SetActive(isActive);
+    }
+
+    public bool isPistolActive() {
+        return pistol.activeSelf;
     }
 
     public void PlayDetectedSound() {

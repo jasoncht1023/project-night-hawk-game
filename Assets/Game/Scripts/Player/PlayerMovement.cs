@@ -5,6 +5,7 @@ public class PlayerMovement : MonoBehaviour {
     InputManager inputManager;
     CameraManager cameraManager;
     PlayerUIManager playerUIManager;
+    FiringController firingController;
     private AssassinationController assassinationController;
 
     [Header("Movement")]
@@ -16,10 +17,12 @@ public class PlayerMovement : MonoBehaviour {
     public float runningSpeed = 6f;
     public float walkingSpeed = 3f;
     public float carryWalkingSpeed = 1.5f;
+    public float crouchingRunningSpeed = 4.5f;
     public float rotationSpeed = 12f;
 
     [Header("Movement Flags")]
     public bool isWalking;
+    public bool isCrouching;
     public bool isRunning;
 
     [Header("Gravity")]
@@ -28,21 +31,25 @@ public class PlayerMovement : MonoBehaviour {
     public bool isGrounded;
 
     [Header("Footsteps")]
-    public AudioSource leftFootAudioSource;
-    public AudioSource rightFootAudioSource;
+    public AudioSource audioSource;
     public AudioClip[] footstepSounds;
     public float runningFootstepInterval = 0.35f;
     public float walkingFootstepInterval = 0.5f;
     public float carryWalkingFootstepInterval = 0.7f;
     private float nextFootstepTime;
-    private bool isLeftFootstep = true;
 
-    [Header("Dead body pickup")]
+    [Header("Dead body interaction")]
     public bool isCarrying;
     public float pickupInterval = 1f;
     public float nextPickupTime;
+    public int healthLoot = 5;
+    public int ammoLoot = 1;
+    public AudioClip lootAudioClip;
 
     public bool isReloading;
+
+    private Animator playerAnimator;
+    private CapsuleCollider playerCollider;
 
     void Awake() {
         inputManager = GetComponent<InputManager>();        // InputManager is attached to the same player
@@ -50,6 +57,9 @@ public class PlayerMovement : MonoBehaviour {
         playerRigidbody = GetComponent<Rigidbody>();
         currentHealth = characterHealth;
         assassinationController = GetComponent<AssassinationController>();
+        playerAnimator = GetComponent<Animator>();
+        playerCollider = GetComponent<CapsuleCollider>();
+        audioSource = GetComponent<AudioSource>();
     }
 
     private void Start() {
@@ -58,6 +68,26 @@ public class PlayerMovement : MonoBehaviour {
 
     void Update() {
         cameraManager = FindFirstObjectByType<CameraManager>();
+        firingController = FindFirstObjectByType<FiringController>();
+
+        if (inputManager.crouchInput == true) {
+            playerAnimator.SetBool("Crouching", !isCrouching);
+            inputManager.SwitchCrouchDone();
+        }
+
+        isCrouching = playerAnimator.GetBool("Crouching");
+
+        if (isCrouching) {
+            playerCollider.center = new Vector3(0f, 0.9f, 0.2f);
+            playerCollider.radius = 0.35f;
+            playerCollider.height = 1.8f;
+        }
+        else {
+            playerCollider.center = new Vector3(0f, 1.14f, 0f);
+            playerCollider.radius = 0.3f;
+            playerCollider.height = 2.3f;
+        }
+
         float footstepInterval = 0f;
         if (isRunning == true) {
             footstepInterval = runningFootstepInterval;
@@ -67,14 +97,13 @@ public class PlayerMovement : MonoBehaviour {
             footstepInterval = carryWalkingFootstepInterval;
         }
 
-        if ((isWalking || isRunning) && isGrounded && Time.time >= nextFootstepTime) {
+        if ((isWalking || isRunning) && isGrounded && !isCrouching && Time.time >= nextFootstepTime) {
             PlayFootStepSound();
             nextFootstepTime = Time.time + footstepInterval;
         }
-        if (inputManager.sprintInput == false || inputManager.movementInput == new Vector2(0, 0)) {
+        if (inputManager.sprintInput == false || inputManager.movementInput == Vector2.zero) {
             isRunning = false;
         }
-
     }
 
     public void HandleAllMovement() {
@@ -88,6 +117,7 @@ public class PlayerMovement : MonoBehaviour {
         if (assassinationController != null && assassinationController.IsAssassinating()) {
             isWalking = false;
             isRunning = false;
+            isCrouching = false;
             return;
         }
 
@@ -99,7 +129,12 @@ public class PlayerMovement : MonoBehaviour {
         if (inputManager.moveAmount > 0.5f) {
             if (inputManager.sprintInput == true && isReloading == false && isCarrying == false && cameraManager.isScoped == false) {
                 isRunning = true;
-                moveDirection = moveDirection * runningSpeed;
+                if (isCrouching == true) {
+                    moveDirection = moveDirection * crouchingRunningSpeed;
+                } 
+                else {
+                    moveDirection = moveDirection * runningSpeed;
+                }
             } else {
                 isRunning = false;
                 isWalking = true;
@@ -183,11 +218,16 @@ public class PlayerMovement : MonoBehaviour {
     }
 
     private void PlayFootStepSound() {
-        AudioSource footAudioSource = isLeftFootstep ? leftFootAudioSource : rightFootAudioSource;
         if (footstepSounds.Length > 0) {
             AudioClip clip = footstepSounds[Random.Range(0, footstepSounds.Length)];
-            footAudioSource.PlayOneShot(clip);
+            audioSource.PlayOneShot(clip);
         }
-        isLeftFootstep = !isLeftFootstep;
+    }
+
+    public void LootSoldier() {
+        currentHealth = Mathf.Clamp(currentHealth + healthLoot, 0, 100);
+        playerUIManager.UpdateHealthBar(currentHealth, characterHealth);
+        firingController.LootAmmo(ammoLoot);
+        audioSource.PlayOneShot(lootAudioClip);
     }
 }
