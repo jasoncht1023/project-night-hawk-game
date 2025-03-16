@@ -297,7 +297,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 115820790164456103}
-  - component: {fileID: 5175356155144570749}
   m_Layer: 3
   m_Name: silenced-pistol
   m_TagString: Untagged
@@ -326,31 +325,6 @@ Transform:
   - {fileID: 3956492405764782087}
   m_Father: {fileID: 263109682753050670}
   m_LocalEulerAnglesHint: {x: -0.712, y: -43.517, z: 88.642}
---- !u!114 &5175356155144570749
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1615040827982050873}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2665bbbc704c4a442808b2f9a1349e66, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  firePoint: {fileID: 0}
-  fireRate: 0.8
-  reloadTime: 3
-  magazineCapacity: 8
-  maxAmmo: 24
-  fireRange: 35
-  damage: 5
-  animator: {fileID: 6936733422227672328}
-  soundAudioSource: {fileID: 8620269695487553473}
-  fireSoundClip: {fileID: 8300000, guid: b03c07a29405c0342bd931756a4ae6c1, type: 3}
-  reloadSoundClip: {fileID: 8300000, guid: 7942c7f44647d6443a39252bc10d2ed1, type: 3}
-  muzzleFlash: {fileID: 35046272866863467}
-  bloodEffect: {fileID: 1450524396492064870, guid: 2d6762876fc7e7f4eb85c4d0d13cfba2, type: 3}
 --- !u!1 &1743181327883966089
 GameObject:
   m_ObjectHideFlags: 0
@@ -1381,6 +1355,7 @@ GameObject:
   - component: {fileID: 3425835231510136702}
   - component: {fileID: 8620269695487553473}
   - component: {fileID: 6661620714247171513}
+  - component: {fileID: 6156641411233732817}
   m_Layer: 3
   m_Name: Player
   m_TagString: Untagged
@@ -1396,7 +1371,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5225822729984755564}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: 0.7071068, z: -0, w: 0.7071068}
+  m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
   m_LocalPosition: {x: 10.792327, y: 19.542, z: -92.855}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -1455,6 +1430,7 @@ MonoBehaviour:
   interactInput: 0
   crouchInput: 0
   assassinateInput: 0
+  lootInput: 0
 --- !u!114 &8728078391919432364
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1472,16 +1448,16 @@ MonoBehaviour:
   runningSpeed: 6
   walkingSpeed: 3
   carryWalkingSpeed: 1.5
+  crouchingRunningSpeed: 4.5
   rotationSpeed: 12
   isWalking: 0
+  isCrouching: 0
   isRunning: 0
   gravity: -9.81
   fallSpeed: 5
   isGrounded: 0
-  leftFootAudioSource: {fileID: 8620269695487553473}
-  rightFootAudioSource: {fileID: 8620269695487553473}
+  audioSource: {fileID: 0}
   footstepSounds:
-  - {fileID: 8300000, guid: 9b7a16a3f3c097147a288ff04bc1b785, type: 3}
   - {fileID: 8300000, guid: 9b7a16a3f3c097147a288ff04bc1b785, type: 3}
   runningFootstepInterval: 0.35
   walkingFootstepInterval: 0.5
@@ -1489,6 +1465,9 @@ MonoBehaviour:
   isCarrying: 0
   pickupInterval: 1
   nextPickupTime: 0
+  healthLoot: 5
+  ammoLoot: 1
+  lootAudioClip: {fileID: 8300000, guid: 6aed597e4e4fb404f9922e60386fa801, type: 3}
   isReloading: 0
 --- !u!114 &6131672553528979780
 MonoBehaviour:
@@ -1533,6 +1512,11 @@ MonoBehaviour:
   engagedSoundClip: {fileID: 8300000, guid: 20709c4e00ace764c8553b958f76525f, type: 3}
   detectedSoundInterval: 3
   engagedSoundInterval: 5
+  soldierLayer:
+    serializedVersion: 2
+    m_Bits: 64
+  walkPingRadius: 8
+  runPingRadius: 15
 --- !u!114 &8534603570062056442
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1715,6 +1699,33 @@ MonoBehaviour:
     m_Bits: 64
   m9Knife: {fileID: 5546385488173919042}
   pistol: {fileID: 1615040827982050873}
+  soundAudioSource: {fileID: 0}
+  stabSoundClip: {fileID: 8300000, guid: ebf7eb63adddbde4db454b08742c5564, type: 3}
+--- !u!114 &6156641411233732817
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5225822729984755564}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2665bbbc704c4a442808b2f9a1349e66, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  firePoint: {fileID: 0}
+  fireRate: 0.8
+  reloadTime: 3
+  magazineCapacity: 8
+  maxAmmo: 24
+  fireRange: 35
+  damage: 5
+  animator: {fileID: 6936733422227672328}
+  soundAudioSource: {fileID: 8620269695487553473}
+  fireSoundClip: {fileID: 8300000, guid: b03c07a29405c0342bd931756a4ae6c1, type: 3}
+  reloadSoundClip: {fileID: 8300000, guid: 7942c7f44647d6443a39252bc10d2ed1, type: 3}
+  muzzleFlash: {fileID: 35046272866863467}
+  bloodEffect: {fileID: 1450524396492064870, guid: 2d6762876fc7e7f4eb85c4d0d13cfba2, type: 3}
 --- !u!1 &5766547300831182417
 GameObject:
   m_ObjectHideFlags: 0

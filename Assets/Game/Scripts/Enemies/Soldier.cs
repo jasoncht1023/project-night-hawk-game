@@ -28,10 +28,13 @@ public class Soldier : MonoBehaviour {
     public float alertTimeout = 20f;
     public LayerMask soldierLayer;
     public float alertAllyRadius = 20f;
+    public float noiseHeardTimeout = 3f;
+    private float stopCheckNoiseTime;
     private float nextChaseTime;
     private float alertEndTime;
     private float detectionProgress = 0;
     private Vector3 playerLastSeenPosition;
+    private Vector3 playerLastHeardPosition;
     private Quaternion chaseStopRotationPivot;
     private GameObject playerBody;
     private NavMeshAgent agent;
@@ -93,7 +96,7 @@ public class Soldier : MonoBehaviour {
             playerLastSeenPosition = playerBody.transform.position;
         }
 
-        if (isAlerted == true) {
+        if (isAlerted) {
             if (Time.time > alertEndTime) {
                 isAlerted = false;
                 enemyUIManager.DisableAllUI();
@@ -103,7 +106,8 @@ public class Soldier : MonoBehaviour {
                 isEngaged = true;
                 isAlerted = false;
                 gameManager.PlayEngagedSound();
-            } else {                                      // Stay in position while alerted
+            } 
+            else {                                      // Stay in position while alerted
                 StopAllMovement();
 
                 // Loop rotation in a 90 degrees sector to try scanning the player
@@ -136,29 +140,40 @@ public class Soldier : MonoBehaviour {
                     gameManager.PlayDetectedSound();
                     isPlayedDetectedSound = true;
                 }
-            } else if (detectionProgress > 0) {
+            } 
+            else if (detectionProgress > 0) {
                 detectionProgress = Mathf.Clamp01(detectionProgress - Time.deltaTime / detectTime);
             }
 
             if (detectionProgress == 0) {
                 enemyUIManager.SetDetectionSliderActive(false);
                 isPlayedDetectedSound = false;
-                if (waypoints.Count > 1) {
+                if (Time.time < stopCheckNoiseTime) {           // Heard player footstep
+                    StopAllMovement();
+                    Vector3 directionToPlayer = (playerBody.transform.position - transform.position).normalized;
+                    Vector3 lookDirection = new Vector3(directionToPlayer.x, 0, directionToPlayer.z);
+                    transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(lookDirection), Time.deltaTime * turningSpeed);
+                }
+                else if (waypoints.Count > 1) {                 // Patrol if a patrol route is defined (# of waypoints > 1)
                     Patrol();
-                } else {
+                } 
+                else {                                          // Walk back to assigned stationary position (# of waypoints == 1)
                     if (Vector3.Distance(transform.position, waypoints[currentWaypointIndex].position) < 0.15f) {
                         transform.position = waypoints[currentWaypointIndex].position;
                         transform.rotation = waypoints[currentWaypointIndex].rotation;
                         StopAllMovement();
-                    } else {
+                    }
+                    else {
                         WalkToNextWaypoint();
                     }
                 }
-            } else if (detectionProgress == 1) {                  // Engage in gun fight when detection progress is full
+            } 
+            else if (detectionProgress == 1) {                  // Engage in gun fight when detection progress is full
                 detectionProgress = 0;
                 isEngaged = true;
                 gameManager.PlayEngagedSound();
-            } else {                                              // 0 < detection progress < 1, update detection slider
+            } 
+            else {                                              // 0 < detection progress < 1, update detection slider
                 StopAllMovement();
 
                 enemyUIManager.SetDetectionSliderActive(true);
@@ -180,7 +195,8 @@ public class Soldier : MonoBehaviour {
                 enemyUIManager.SetAlertedActive(true);
                 chaseStopRotationPivot = transform.rotation;
             }
-        } else if (isEngaged && playerInVision) {
+        } 
+        else if (isEngaged && playerInVision) {
             nextChaseTime = Time.time + chasingCooldown;
             ShootPlayer();
         }
@@ -191,9 +207,16 @@ public class Soldier : MonoBehaviour {
         soundAudioSource.PlayOneShot(deathScreamClip);
     }
 
+    // Engage soldier by another soldier in engage mode
     public void AlertSoldier(Vector3 playerPosition) {
         playerLastSeenPosition = playerPosition;
         isEngaged = true;
+    }
+
+    // Soldier check player position when footstep is heard
+    public void PingSoldier(Vector3 playerPosition) {
+        playerLastHeardPosition = playerPosition;
+        stopCheckNoiseTime = Time.time + noiseHeardTimeout;
     }
 
     private void Patrol() {
@@ -355,7 +378,8 @@ public class Soldier : MonoBehaviour {
             float footstepInterval = 0f;
             if (isRunning == true) {
                 footstepInterval = runningFootstepInterval;
-            } else {
+            } 
+            else {
                 footstepInterval = walkingFootstepInterval;
             }
 

@@ -60,6 +60,7 @@ public class PlayerMovement : MonoBehaviour {
         playerAnimator = GetComponent<Animator>();
         playerCollider = GetComponent<CapsuleCollider>();
         audioSource = GetComponent<AudioSource>();
+        firingController = GetComponent<FiringController>();
     }
 
     private void Start() {
@@ -68,7 +69,6 @@ public class PlayerMovement : MonoBehaviour {
 
     void Update() {
         cameraManager = FindFirstObjectByType<CameraManager>();
-        firingController = FindFirstObjectByType<FiringController>();
 
         if (inputManager.crouchInput == true) {
             playerAnimator.SetBool("Crouching", !isCrouching);

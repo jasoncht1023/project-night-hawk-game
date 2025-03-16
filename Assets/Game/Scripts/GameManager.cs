@@ -18,6 +18,11 @@ public class GameManager : MonoBehaviour {
     private float nextDetectedSoundTime;
     private float nextEngagedSoundTime;
 
+    [Header("Footstep Detection")]
+    public LayerMask soldierLayer;
+    public float walkPingRadius = 8f;
+    public float runPingRadius = 15f; 
+
     private string scopeAnimationBool = "ScopeActive";
 
     GameObject player;
@@ -49,6 +54,8 @@ public class GameManager : MonoBehaviour {
         else {
             animator.SetBool(scopeAnimationBool, false);
         }
+
+        PingSoldierWithFootstep();
     }
 
     public void SetPistolActive(bool isActive) {
@@ -71,5 +78,30 @@ public class GameManager : MonoBehaviour {
             playerAudioSource.PlayOneShot(engagedSoundClip);
             nextEngagedSoundTime = Time.time + engagedSoundInterval;
         }
+    }
+
+    private void PingSoldierWithFootstep() {
+        if (playerMovement.isCrouching == false) {
+            if (playerMovement.isRunning == true) {
+                Collider[] soldiers = Physics.OverlapSphere(transform.position, runPingRadius, soldierLayer);
+                foreach (Collider soldierCollider in soldiers) {
+                    Soldier soldier = soldierCollider.GetComponent<Soldier>();
+                    if (soldier != null) {
+                        soldier.PingSoldier(player.transform.position);
+                    }
+                }
+            }
+            else if (playerMovement.isWalking == true) {
+                Collider[] soldiers = Physics.OverlapSphere(transform.position, walkPingRadius, soldierLayer);
+                foreach (Collider soldierCollider in soldiers) {
+                    Soldier soldier = soldierCollider.GetComponent<Soldier>();
+                    if (soldier != null) {
+                        soldier.PingSoldier(player.transform.position);
+                    }
+                }
+            }
+
+        }
+
     }
 }
