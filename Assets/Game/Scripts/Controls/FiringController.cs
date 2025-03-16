@@ -30,9 +30,9 @@ public class FiringController : MonoBehaviour {
     public GameObject bloodEffect;
 
     private void Start() {
-        inputManager = FindFirstObjectByType<InputManager>();
-        playerMovement = FindFirstObjectByType<PlayerMovement>();
-        playerUIManager = FindFirstObjectByType<PlayerUIManager>();
+        inputManager = GetComponent<InputManager>();
+        playerMovement = GetComponent<PlayerMovement>();
+        playerUIManager = GetComponent<PlayerUIManager>();
         currentMagazine = magazineCapacity;
         currentAmmo = maxAmmo;
         playerUIManager.UpdateMagazineCount(currentMagazine);
@@ -47,6 +47,7 @@ public class FiringController : MonoBehaviour {
 
         if (inputManager.reloadInput && currentMagazine < magazineCapacity && currentAmmo > 0 && isReloading == false) {
             StartCoroutine(Reload());
+            animator.SetBool("Crouching", false);
             animator.SetTrigger("Reloading");
         }
     }
@@ -121,5 +122,10 @@ public class FiringController : MonoBehaviour {
         }
         isReloading = false;
         playerMovement.SetReloading(isReloading);
+    }
+
+    public void LootAmmo(int ammo) {
+        currentAmmo += ammo;
+        playerUIManager.UpdateTotalAmmoCount(currentAmmo);
     }
 }

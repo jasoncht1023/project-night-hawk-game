@@ -10,9 +10,12 @@ public class AssassinationController : MonoBehaviour {
     [Header("References")]
     private InputManager inputManager;
     private Animator playerAnimator;
-    private PlayerMovement playerMovement;
     public GameObject m9Knife;
     public GameObject pistol;
+
+    [Header("Sound Effect")]
+    public AudioSource soundAudioSource;
+    public AudioClip stabSoundClip;
 
     private bool canAssassinate = false;
     private Soldier targetSoldier = null;
@@ -22,7 +25,7 @@ public class AssassinationController : MonoBehaviour {
     private void Awake() {
         inputManager = GetComponent<InputManager>();
         playerAnimator = GetComponent<Animator>();
-        playerMovement = GetComponent<PlayerMovement>();
+        soundAudioSource = GetComponent<AudioSource>();
 
         // Make sure knife is hidden initially
         if (m9Knife != null) {
@@ -113,7 +116,10 @@ public class AssassinationController : MonoBehaviour {
         }
 
         // Trigger assassination animation
+        playerAnimator.SetBool("Crouching", false);
         playerAnimator.SetTrigger("Assassinate");
+
+        soundAudioSource.PlayOneShot(stabSoundClip);
 
         // Wait for animation to complete (approximate time)
         yield return new WaitForSeconds(0.9f);

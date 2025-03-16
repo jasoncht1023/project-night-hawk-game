@@ -1550,7 +1550,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3280344429457315281}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: 1, z: -0, w: 0}
+  m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -1583,7 +1583,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7ac49a61c5b56d345a7484762701945e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  walkingSpeed: 1.8
+  walkingSpeed: 1.5
   runningSpeed: 4
   turningSpeed: 5
   currentHealth: 0
@@ -1603,6 +1603,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   alertAllyRadius: 20
+  noiseHeardTimeout: 3
   damage: 25
   shootingRange: 100
   shootingRaycastPosition: {fileID: 416986812609038852}
@@ -1612,6 +1613,7 @@ MonoBehaviour:
   soundAudioSource: {fileID: 0}
   fireSoundClip: {fileID: 8300000, guid: a30b03c56f3bd9740bf9be83d53a16e5, type: 3}
   footstepClip: {fileID: 8300000, guid: 9b7a16a3f3c097147a288ff04bc1b785, type: 3}
+  deathScreamClip: {fileID: 8300000, guid: bd49ce88d7782e44c8570454aa1b4010, type: 3}
   runningFootstepInterval: 0.35
   walkingFootstepInterval: 0.5
   muzzleFlash: {fileID: 7849515026848524359}
