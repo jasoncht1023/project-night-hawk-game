@@ -311,7 +311,11 @@ public class Soldier : MonoBehaviour {
             muzzleFlash.Play();
             soundAudioSource.PlayOneShot(fireSoundClip);
 
-            if (Physics.Raycast(shootingRaycastPosition.transform.position, shootingRaycastPosition.transform.forward, out hit, shootingRange)) {
+            // Calculate direction from shooting position to player for accurate aiming
+            Vector3 shootDirection = (playerBody.transform.position - shootingRaycastPosition.transform.position).normalized;
+            
+            // Raycast directly toward player position instead of just forward
+            if (Physics.Raycast(shootingRaycastPosition.transform.position, shootDirection, out hit, shootingRange)) {
                 PlayerMovement player = hit.transform.GetComponent<PlayerMovement>();
                 if (player != null) {
                     player.characterHitDamage(damage);
