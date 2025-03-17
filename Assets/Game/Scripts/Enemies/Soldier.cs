@@ -48,6 +48,10 @@ public class Soldier : MonoBehaviour {
     bool shootingCooldown = true;
     private bool firstShotDelay = true;
     float timeForFirstShotDelay = 1f;
+    public float maxAccuracy = 0.9f; // Maximum hit chance (90%)
+    public float minAccuracy = 0.3f; // Minimum hit chance (30%)
+    public float distanceAccuracyFactor = 0.6f; // How much distance affects accuracy
+    public float movementAccuracyPenalty = 0.3f; // Accuracy reduction when player is running
 
     public bool isAlerted = false;
     public bool isEngaged = false;
@@ -305,14 +309,59 @@ public class Soldier : MonoBehaviour {
 
             // Calculate position to aim at (player's chest)
             Vector3 playerChestPosition = playerBody.transform.position + Vector3.up * 1.5f; // Offset to represent chest height
-            Vector3 aimDirection = (playerChestPosition - shootingRaycastPosition.transform.position).normalized;
 
-            if (Physics.Raycast(shootingRaycastPosition.transform.position, aimDirection, out hit, shootingRange)) {
-                PlayerMovement player = hit.transform.GetComponent<PlayerMovement>();
-                if (player != null) {
-                    player.characterHitDamage(damage);
-                    GameObject bloodEffectGo = Instantiate(bloodEffect, hit.point, Quaternion.LookRotation(hit.normal));
-                    Destroy(bloodEffectGo, 1f);
+            // Calculate accuracy based on distance and player movement
+            float distanceToPlayer = Vector3.Distance(transform.position, playerBody.transform.position);
+            float distanceAccuracy = 1.0f - Mathf.Clamp01(distanceToPlayer / shootingRange) * distanceAccuracyFactor;
+
+            // Check if player is running
+            PlayerMovement playerMovement = playerBody.GetComponent<PlayerMovement>();
+            bool isPlayerRunning = false;
+            if (playerMovement != null) {
+                isPlayerRunning = playerMovement.isRunning;
+            }
+
+            // Calculate final accuracy
+            float finalAccuracy = maxAccuracy * distanceAccuracy;
+            if (isPlayerRunning) {
+                finalAccuracy *= 1.0f - movementAccuracyPenalty;
+            }
+            finalAccuracy = Mathf.Clamp(finalAccuracy, minAccuracy, maxAccuracy);
+
+            Debug.Log("Final Accuracy: " + finalAccuracy); // Debug log for accuracy
+
+            // Determine if shot hits based on accuracy
+            if (Random.value <= finalAccuracy) {
+                // Accurate shot
+                Vector3 aimDirection = (playerChestPosition - shootingRaycastPosition.transform.position).normalized;
+
+                if (Physics.Raycast(shootingRaycastPosition.transform.position, aimDirection, out hit, shootingRange)) {
+                    PlayerMovement player = hit.transform.GetComponent<PlayerMovement>();
+                    if (player != null) {
+                        player.characterHitDamage(damage);
+                        GameObject bloodEffectGo = Instantiate(bloodEffect, hit.point, Quaternion.LookRotation(hit.normal));
+                        Destroy(bloodEffectGo, 1f);
+                    }
+                }
+            } else {
+                // Miss shot - create a randomized direction that misses
+                Vector3 aimDirection = (playerChestPosition - shootingRaycastPosition.transform.position).normalized;
+
+                // Add random deviation to the aim direction
+                float missDeviation = Random.Range(0.1f, 0.3f);
+                aimDirection += new Vector3(
+                    Random.Range(-missDeviation, missDeviation),
+                    Random.Range(-missDeviation, missDeviation),
+                    Random.Range(-missDeviation, missDeviation)
+                );
+                aimDirection.Normalize();
+
+                // Fire the missed shot
+                Physics.Raycast(shootingRaycastPosition.transform.position, aimDirection, out hit, shootingRange);
+
+                // Optional: Add bullet impact effect where the missed shot lands
+                if (hit.point != Vector3.zero && hit.transform != null) {
+                    // Could add bullet impact effect here
                 }
             }
 
