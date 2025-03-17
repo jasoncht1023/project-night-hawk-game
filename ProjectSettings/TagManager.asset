@@ -5,6 +5,8 @@ TagManager:
   serializedVersion: 3
   tags:
   - PlayerCarryDeadbodyPosition
+  - MinimapCamera
+  - MinimapPlayer
   layers:
   - Default
   - TransparentFX
@@ -15,7 +17,7 @@ TagManager:
   - Soldier
   - 
   - 
-  - 
+  - MinimapLayer
   - 
   - 
   - 
