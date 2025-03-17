@@ -33,6 +33,22 @@ public class MinimapMarker : MonoBehaviour {
                 // Object has been destroyed, mark for removal
                 objectsToRemove.Add(kvp.Key);
                 Destroy(kvp.Value); // Destroy the associated marker
+                continue;
+            }
+
+            // Check if object is a soldier and is disabled
+            Soldier soldier = kvp.Key.GetComponent<Soldier>();
+            if (soldier != null && !soldier.enabled) {
+                // Soldier is disabled, mark for removal
+                objectsToRemove.Add(kvp.Key);
+                Destroy(kvp.Value); // Destroy the associated marker
+                continue;
+            }
+
+            // Handle disabled GameObjects as well
+            if (!kvp.Key.activeInHierarchy) {
+                objectsToRemove.Add(kvp.Key);
+                Destroy(kvp.Value);
             }
         }
 
@@ -67,6 +83,9 @@ public class MinimapMarker : MonoBehaviour {
 
             // Skip if this is the player or already has a marker
             if (enemyObj.CompareTag(playerTag) || objectToMarker.ContainsKey(enemyObj)) continue;
+
+            // Skip disabled soldiers
+            if (!soldier.enabled || !enemyObj.activeInHierarchy) continue;
 
             // Create a marker for this enemy
             CreateMarkerForObject(enemyObj, enemySprite);
