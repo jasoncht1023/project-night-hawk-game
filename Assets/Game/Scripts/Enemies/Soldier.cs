@@ -51,7 +51,8 @@ public class Soldier : MonoBehaviour {
     public float maxAccuracy = 0.9f; // Maximum hit chance (90%)
     public float minAccuracy = 0.3f; // Minimum hit chance (30%)
     public float distanceAccuracyFactor = 0.6f; // How much distance affects accuracy
-    public float movementAccuracyPenalty = 0.3f; // Accuracy reduction when player is running
+    public float runningAccuracyPenalty = 0.5f; // Accuracy reduction when player is running
+    public float walkingAccuracyPenalty = 0.2f; // Accuracy reduction when player is walking
 
     public bool isAlerted = false;
     public bool isEngaged = false;
@@ -317,14 +318,19 @@ public class Soldier : MonoBehaviour {
             // Check if player is running
             PlayerMovement playerMovement = playerBody.GetComponent<PlayerMovement>();
             bool isPlayerRunning = false;
+            bool isPlayerWalking = false;
             if (playerMovement != null) {
                 isPlayerRunning = playerMovement.isRunning;
+                isPlayerWalking = playerMovement.isWalking;
             }
 
             // Calculate final accuracy
             float finalAccuracy = maxAccuracy * distanceAccuracy;
             if (isPlayerRunning) {
-                finalAccuracy *= 1.0f - movementAccuracyPenalty;
+                finalAccuracy *= 1.0f - runningAccuracyPenalty;
+            }
+            else if (isPlayerWalking) {
+                finalAccuracy *= 1.0f - walkingAccuracyPenalty;
             }
             finalAccuracy = Mathf.Clamp(finalAccuracy, minAccuracy, maxAccuracy);
 
@@ -343,7 +349,8 @@ public class Soldier : MonoBehaviour {
                         Destroy(bloodEffectGo, 1f);
                     }
                 }
-            } else {
+            } 
+            else {
                 // Miss shot - create a randomized direction that misses
                 Vector3 aimDirection = (playerChestPosition - shootingRaycastPosition.transform.position).normalized;
 
@@ -356,13 +363,7 @@ public class Soldier : MonoBehaviour {
                 );
                 aimDirection.Normalize();
 
-                // Fire the missed shot
                 Physics.Raycast(shootingRaycastPosition.transform.position, aimDirection, out hit, shootingRange);
-
-                // Optional: Add bullet impact effect where the missed shot lands
-                if (hit.point != Vector3.zero && hit.transform != null) {
-                    // Could add bullet impact effect here
-                }
             }
 
             // Set timed cooldown between firing
