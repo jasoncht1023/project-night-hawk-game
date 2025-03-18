@@ -48,6 +48,11 @@ public class Soldier : MonoBehaviour {
     bool shootingCooldown = true;
     private bool firstShotDelay = true;
     float timeForFirstShotDelay = 1f;
+    public float maxAccuracy = 0.9f; // Maximum hit chance (90%)
+    public float minAccuracy = 0.3f; // Minimum hit chance (30%)
+    public float distanceAccuracyFactor = 0.6f; // How much distance affects accuracy
+    public float runningAccuracyPenalty = 0.5f; // Accuracy reduction when player is running
+    public float walkingAccuracyPenalty = 0.2f; // Accuracy reduction when player is walking
 
     public bool isAlerted = false;
     public bool isEngaged = false;
@@ -106,8 +111,7 @@ public class Soldier : MonoBehaviour {
                 isEngaged = true;
                 isAlerted = false;
                 gameManager.PlayEngagedSound();
-            } 
-            else {                                      // Stay in position while alerted
+            } else {                                      // Stay in position while alerted
                 StopAllMovement();
 
                 // Loop rotation in a 90 degrees sector to try scanning the player
@@ -140,8 +144,7 @@ public class Soldier : MonoBehaviour {
                     gameManager.PlayDetectedSound();
                     isPlayedDetectedSound = true;
                 }
-            } 
-            else if (detectionProgress > 0) {
+            } else if (detectionProgress > 0) {
                 detectionProgress = Mathf.Clamp01(detectionProgress - Time.deltaTime / detectTime);
             }
 
@@ -153,27 +156,22 @@ public class Soldier : MonoBehaviour {
                     Vector3 directionToPlayer = (playerBody.transform.position - transform.position).normalized;
                     Vector3 lookDirection = new Vector3(directionToPlayer.x, 0, directionToPlayer.z);
                     transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(lookDirection), Time.deltaTime * turningSpeed);
-                }
-                else if (waypoints.Count > 1) {                 // Patrol if a patrol route is defined (# of waypoints > 1)
+                } else if (waypoints.Count > 1) {                 // Patrol if a patrol route is defined (# of waypoints > 1)
                     Patrol();
-                } 
-                else {                                          // Walk back to assigned stationary position (# of waypoints == 1)
+                } else {                                          // Walk back to assigned stationary position (# of waypoints == 1)
                     if (Vector3.Distance(transform.position, waypoints[currentWaypointIndex].position) < 0.15f) {
                         transform.position = waypoints[currentWaypointIndex].position;
                         transform.rotation = waypoints[currentWaypointIndex].rotation;
                         StopAllMovement();
-                    }
-                    else {
+                    } else {
                         WalkToNextWaypoint();
                     }
                 }
-            } 
-            else if (detectionProgress == 1) {                  // Engage in gun fight when detection progress is full
+            } else if (detectionProgress == 1) {                  // Engage in gun fight when detection progress is full
                 detectionProgress = 0;
                 isEngaged = true;
                 gameManager.PlayEngagedSound();
-            } 
-            else {                                              // 0 < detection progress < 1, update detection slider
+            } else {                                              // 0 < detection progress < 1, update detection slider
                 StopAllMovement();
 
                 enemyUIManager.SetDetectionSliderActive(true);
@@ -195,8 +193,7 @@ public class Soldier : MonoBehaviour {
                 enemyUIManager.SetAlertedActive(true);
                 chaseStopRotationPivot = transform.rotation;
             }
-        } 
-        else if (isEngaged && playerInVision) {
+        } else if (isEngaged && playerInVision) {
             nextChaseTime = Time.time + chasingCooldown;
             ShootPlayer();
         }
@@ -311,13 +308,62 @@ public class Soldier : MonoBehaviour {
             muzzleFlash.Play();
             soundAudioSource.PlayOneShot(fireSoundClip);
 
-            if (Physics.Raycast(shootingRaycastPosition.transform.position, shootingRaycastPosition.transform.forward, out hit, shootingRange)) {
-                PlayerMovement player = hit.transform.GetComponent<PlayerMovement>();
-                if (player != null) {
-                    player.characterHitDamage(damage);
-                    GameObject bloodEffectGo = Instantiate(bloodEffect, hit.point, Quaternion.LookRotation(hit.normal));
-                    Destroy(bloodEffectGo, 1f);
+            // Calculate position to aim at (player's chest)
+            Vector3 playerChestPosition = playerBody.transform.position + Vector3.up * 1.5f; // Offset to represent chest height
+
+            // Calculate accuracy based on distance and player movement
+            float distanceToPlayer = Vector3.Distance(transform.position, playerBody.transform.position);
+            float distanceAccuracy = 1.0f - Mathf.Clamp01(distanceToPlayer / shootingRange) * distanceAccuracyFactor;
+
+            // Check if player is running
+            PlayerMovement playerMovement = playerBody.GetComponent<PlayerMovement>();
+            bool isPlayerRunning = false;
+            bool isPlayerWalking = false;
+            if (playerMovement != null) {
+                isPlayerRunning = playerMovement.isRunning;
+                isPlayerWalking = playerMovement.isWalking;
+            }
+
+            // Calculate final accuracy
+            float finalAccuracy = maxAccuracy * distanceAccuracy;
+            if (isPlayerRunning) {
+                finalAccuracy *= 1.0f - runningAccuracyPenalty;
+            }
+            else if (isPlayerWalking) {
+                finalAccuracy *= 1.0f - walkingAccuracyPenalty;
+            }
+            finalAccuracy = Mathf.Clamp(finalAccuracy, minAccuracy, maxAccuracy);
+
+            Debug.Log("Final Accuracy: " + finalAccuracy); // Debug log for accuracy
+
+            // Determine if shot hits based on accuracy
+            if (Random.value <= finalAccuracy) {
+                // Accurate shot
+                Vector3 aimDirection = (playerChestPosition - shootingRaycastPosition.transform.position).normalized;
+
+                if (Physics.Raycast(shootingRaycastPosition.transform.position, aimDirection, out hit, shootingRange)) {
+                    PlayerMovement player = hit.transform.GetComponent<PlayerMovement>();
+                    if (player != null) {
+                        player.characterHitDamage(damage);
+                        GameObject bloodEffectGo = Instantiate(bloodEffect, hit.point, Quaternion.LookRotation(hit.normal));
+                        Destroy(bloodEffectGo, 1f);
+                    }
                 }
+            } 
+            else {
+                // Miss shot - create a randomized direction that misses
+                Vector3 aimDirection = (playerChestPosition - shootingRaycastPosition.transform.position).normalized;
+
+                // Add random deviation to the aim direction
+                float missDeviation = Random.Range(0.1f, 0.3f);
+                aimDirection += new Vector3(
+                    Random.Range(-missDeviation, missDeviation),
+                    Random.Range(-missDeviation, missDeviation),
+                    Random.Range(-missDeviation, missDeviation)
+                );
+                aimDirection.Normalize();
+
+                Physics.Raycast(shootingRaycastPosition.transform.position, aimDirection, out hit, shootingRange);
             }
 
             // Set timed cooldown between firing
@@ -378,8 +424,7 @@ public class Soldier : MonoBehaviour {
             float footstepInterval = 0f;
             if (isRunning == true) {
                 footstepInterval = runningFootstepInterval;
-            } 
-            else {
+            } else {
                 footstepInterval = walkingFootstepInterval;
             }
 
