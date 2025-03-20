@@ -213,7 +213,7 @@ public class PlayerMovement : MonoBehaviour {
     }
 
     void characterDie() {
-        Debug.Log("Player Died");
+        //Debug.Log("Player Died");
 
     }
 
