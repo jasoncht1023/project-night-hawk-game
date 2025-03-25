@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.AI;
+using UnityEngine.Audio;
 
 public class Soldier : MonoBehaviour {
     [Header("Character Info")]
@@ -39,6 +40,9 @@ public class Soldier : MonoBehaviour {
     private GameObject playerBody;
     private NavMeshAgent agent;
     private bool isPlayedDetectedSound = false;
+    public float confusedSoundTimeout = 10f;
+    private float canPlayConfusedSoundTime;
+    private List<string> checkedDeadSoldiers;
 
     [Header("Soldier Shooting Var")]
     public int damage = 25;
@@ -67,6 +71,7 @@ public class Soldier : MonoBehaviour {
     public AudioClip fireSoundClip;
     public AudioClip footstepClip;
     public AudioClip deathScreamClip;
+    public AudioClip[] confusedClip;
     public float runningFootstepInterval = 0.35f;
     public float walkingFootstepInterval = 0.5f;
     private float nextFootstepTime;
@@ -87,6 +92,7 @@ public class Soldier : MonoBehaviour {
         agent = GetComponent<NavMeshAgent>();
         chaseStopRotationPivot = transform.rotation;
         gameManager = playerBody.GetComponent<GameManager>();
+        checkedDeadSoldiers = new List<string>();
     }
 
     private void Update() {
@@ -96,6 +102,16 @@ public class Soldier : MonoBehaviour {
         playerInShootingRadius = Physics.CheckSphere(transform.position, shootingRadius, PlayerLayer);
 
         bool playerInVision = detectionSensor.Filter("Player", 1).Count != 0 ? true : false;
+
+        List<GameObject> deadSoldierBodiesInVision = detectionSensor.Filter("DeadSoldier", 0);
+        GameObject deadSoldierToCheck = null;
+        foreach (var soldierBody in deadSoldierBodiesInVision) {
+            string soldierName = soldierBody.transform.parent.name;
+            if (checkedDeadSoldiers.Contains(soldierName) == false) {
+                deadSoldierToCheck = soldierBody.transform.parent.gameObject;
+                break;
+            }
+        }
 
         if (playerInVision) {
             playerLastSeenPosition = playerBody.transform.position;
@@ -114,9 +130,16 @@ public class Soldier : MonoBehaviour {
             } else {                                      // Stay in position while alerted
                 StopAllMovement();
 
-                // Loop rotation in a 90 degrees sector to try scanning the player
-                float angle = Mathf.PingPong(Time.time * 20f, 90f) - 45f;
-                transform.rotation = chaseStopRotationPivot * Quaternion.Euler(0, angle, 0);
+                if (Time.time < stopCheckNoiseTime) {           // Heard player footstep
+                    Vector3 directionToPlayer = (playerBody.transform.position - transform.position).normalized;
+                    Vector3 lookDirection = new Vector3(directionToPlayer.x, 0, directionToPlayer.z);
+                    transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(lookDirection), Time.deltaTime * turningSpeed);
+                }
+                else {
+                    // Loop rotation in a 135 degrees sector to try scanning the player
+                    float angle = Mathf.PingPong(Time.time * 20f, 135f) - 67.5f;
+                    transform.rotation = chaseStopRotationPivot * Quaternion.Euler(0, angle, 0);
+                }
             }
         }
 
@@ -144,7 +167,12 @@ public class Soldier : MonoBehaviour {
                     gameManager.PlayDetectedSound();
                     isPlayedDetectedSound = true;
                 }
-            } else if (detectionProgress > 0) {
+                if (Time.time > canPlayConfusedSoundTime) {
+                    PlayConfusedSound();
+                    canPlayConfusedSoundTime = Time.time + confusedSoundTimeout;
+                }
+            } 
+            else if (detectionProgress > 0) {
                 detectionProgress = Mathf.Clamp01(detectionProgress - Time.deltaTime / detectTime);
             }
 
@@ -152,26 +180,53 @@ public class Soldier : MonoBehaviour {
                 enemyUIManager.SetDetectionSliderActive(false);
                 isPlayedDetectedSound = false;
                 if (Time.time < stopCheckNoiseTime) {           // Heard player footstep
+                    if (Time.time > canPlayConfusedSoundTime) {
+                        PlayConfusedSound();
+                        canPlayConfusedSoundTime = Time.time + confusedSoundTimeout;
+                    }
                     StopAllMovement();
                     Vector3 directionToPlayer = (playerBody.transform.position - transform.position).normalized;
                     Vector3 lookDirection = new Vector3(directionToPlayer.x, 0, directionToPlayer.z);
                     transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(lookDirection), Time.deltaTime * turningSpeed);
-                } else if (waypoints.Count > 1) {                 // Patrol if a patrol route is defined (# of waypoints > 1)
+                }
+                else if (deadSoldierToCheck != null) {
+                    Transform deadSoldierTransform = deadSoldierToCheck.transform;
+                    if (Vector3.Distance(transform.position, deadSoldierTransform.position) < 2f) {
+                        checkedDeadSoldiers.Add(deadSoldierToCheck.name);
+                        isAlerted = true;
+                        alertEndTime = Time.time + alertTimeout;
+                        enemyUIManager.DisableAllUI();
+                        enemyUIManager.SetAlertedActive(true);
+                        chaseStopRotationPivot = transform.rotation;
+                    }
+                    else {
+                        if (Time.time > canPlayConfusedSoundTime) {
+                            PlayConfusedSound();
+                            canPlayConfusedSoundTime = Time.time + confusedSoundTimeout;
+                        }
+                        WalkToWaypoint(deadSoldierTransform);
+                    }
+                }
+                else if (waypoints.Count > 1) {                 // Patrol if a patrol route is defined (# of waypoints > 1)
                     Patrol();
-                } else {                                          // Walk back to assigned stationary position (# of waypoints == 1)
+                } 
+                else {                                          // Walk back to assigned stationary position (# of waypoints == 1)
                     if (Vector3.Distance(transform.position, waypoints[currentWaypointIndex].position) < 0.15f) {
                         transform.position = waypoints[currentWaypointIndex].position;
                         transform.rotation = waypoints[currentWaypointIndex].rotation;
                         StopAllMovement();
                     } else {
-                        WalkToNextWaypoint();
+                        Transform target = waypoints[currentWaypointIndex];
+                        WalkToWaypoint(target);
                     }
                 }
-            } else if (detectionProgress == 1) {                  // Engage in gun fight when detection progress is full
+            } 
+            else if (detectionProgress == 1) {                  // Engage in gun fight when detection progress is full
                 detectionProgress = 0;
                 isEngaged = true;
                 gameManager.PlayEngagedSound();
-            } else {                                              // 0 < detection progress < 1, update detection slider
+            } 
+            else {                                              // 0 < detection progress < 1, update detection slider
                 StopAllMovement();
 
                 enemyUIManager.SetDetectionSliderActive(true);
@@ -217,7 +272,8 @@ public class Soldier : MonoBehaviour {
     }
 
     private void Patrol() {
-        WalkToNextWaypoint();
+        Transform target = waypoints[currentWaypointIndex];
+        WalkToWaypoint(target);
 
         if (Vector3.Distance(transform.position, agent.destination) < 0.15f) {
             // Soldier moves from first way point to last way point
@@ -239,9 +295,8 @@ public class Soldier : MonoBehaviour {
         }
     }
 
-    private void WalkToNextWaypoint() {
+    private void WalkToWaypoint(Transform targetWaypoint) {
         isRunning = false;
-        Transform targetWaypoint = waypoints[currentWaypointIndex];
         Vector3 directionToWaypoint = (targetWaypoint.position - transform.position).normalized;
 
         agent.isStopped = false;
@@ -399,6 +454,8 @@ public class Soldier : MonoBehaviour {
     public void characterDie() {
         if (isBeingAssassinated) {
             animator.SetBool("StabDie", true);
+            deadBodyPickup.isStabDeath = true;
+            
         } else {
             animator.SetBool("ShotDie", true);
         }
@@ -411,6 +468,9 @@ public class Soldier : MonoBehaviour {
         foreach (Collider collider in colliders) {
             collider.enabled = false;
         }
+
+        CapsuleCollider deadSoldierCollider = transform.Find("Body").GetComponent<CapsuleCollider>();
+        deadSoldierCollider.enabled = true;
 
         agent.enabled = false;
         this.enabled = false;
@@ -433,5 +493,10 @@ public class Soldier : MonoBehaviour {
                 nextFootstepTime = Time.time + footstepInterval;
             }
         }
+    }
+
+    private void PlayConfusedSound() {
+        AudioClip clip = confusedClip[Random.Range(0, confusedClip.Length)];
+        soundAudioSource.PlayOneShot(clip);
     }
 }
