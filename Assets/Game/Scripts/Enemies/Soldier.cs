@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.AI;
+using UnityEngine.Audio;
 
 public class Soldier : MonoBehaviour {
     [Header("Character Info")]
@@ -39,6 +40,8 @@ public class Soldier : MonoBehaviour {
     private GameObject playerBody;
     private NavMeshAgent agent;
     private bool isPlayedDetectedSound = false;
+    public float confusedSoundTimeout = 10f;
+    private float canPlayConfusedSoundTime;
     private List<string> checkedDeadSoldiers;
 
     [Header("Soldier Shooting Var")]
@@ -68,6 +71,7 @@ public class Soldier : MonoBehaviour {
     public AudioClip fireSoundClip;
     public AudioClip footstepClip;
     public AudioClip deathScreamClip;
+    public AudioClip[] confusedClip;
     public float runningFootstepInterval = 0.35f;
     public float walkingFootstepInterval = 0.5f;
     private float nextFootstepTime;
@@ -126,9 +130,16 @@ public class Soldier : MonoBehaviour {
             } else {                                      // Stay in position while alerted
                 StopAllMovement();
 
-                // Loop rotation in a 135 degrees sector to try scanning the player
-                float angle = Mathf.PingPong(Time.time * 20f, 135f) - 67.5f;
-                transform.rotation = chaseStopRotationPivot * Quaternion.Euler(0, angle, 0);
+                if (Time.time < stopCheckNoiseTime) {           // Heard player footstep
+                    Vector3 directionToPlayer = (playerBody.transform.position - transform.position).normalized;
+                    Vector3 lookDirection = new Vector3(directionToPlayer.x, 0, directionToPlayer.z);
+                    transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(lookDirection), Time.deltaTime * turningSpeed);
+                }
+                else {
+                    // Loop rotation in a 135 degrees sector to try scanning the player
+                    float angle = Mathf.PingPong(Time.time * 20f, 135f) - 67.5f;
+                    transform.rotation = chaseStopRotationPivot * Quaternion.Euler(0, angle, 0);
+                }
             }
         }
 
@@ -156,6 +167,10 @@ public class Soldier : MonoBehaviour {
                     gameManager.PlayDetectedSound();
                     isPlayedDetectedSound = true;
                 }
+                if (Time.time > canPlayConfusedSoundTime) {
+                    PlayConfusedSound();
+                    canPlayConfusedSoundTime = Time.time + confusedSoundTimeout;
+                }
             } 
             else if (detectionProgress > 0) {
                 detectionProgress = Mathf.Clamp01(detectionProgress - Time.deltaTime / detectTime);
@@ -165,6 +180,10 @@ public class Soldier : MonoBehaviour {
                 enemyUIManager.SetDetectionSliderActive(false);
                 isPlayedDetectedSound = false;
                 if (Time.time < stopCheckNoiseTime) {           // Heard player footstep
+                    if (Time.time > canPlayConfusedSoundTime) {
+                        PlayConfusedSound();
+                        canPlayConfusedSoundTime = Time.time + confusedSoundTimeout;
+                    }
                     StopAllMovement();
                     Vector3 directionToPlayer = (playerBody.transform.position - transform.position).normalized;
                     Vector3 lookDirection = new Vector3(directionToPlayer.x, 0, directionToPlayer.z);
@@ -181,6 +200,10 @@ public class Soldier : MonoBehaviour {
                         chaseStopRotationPivot = transform.rotation;
                     }
                     else {
+                        if (Time.time > canPlayConfusedSoundTime) {
+                            PlayConfusedSound();
+                            canPlayConfusedSoundTime = Time.time + confusedSoundTimeout;
+                        }
                         WalkToWaypoint(deadSoldierTransform);
                     }
                 }
@@ -470,5 +493,10 @@ public class Soldier : MonoBehaviour {
                 nextFootstepTime = Time.time + footstepInterval;
             }
         }
+    }
+
+    private void PlayConfusedSound() {
+        AudioClip clip = confusedClip[Random.Range(0, confusedClip.Length)];
+        soundAudioSource.PlayOneShot(clip);
     }
 }

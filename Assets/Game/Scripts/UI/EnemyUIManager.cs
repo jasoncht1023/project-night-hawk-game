@@ -16,7 +16,6 @@ public class EnemyUIManager : MonoBehaviour {
 
     private void Update() {
         if (mainCamera != null) {
-            Debug.Log(mainCamera);
             canvas.transform.LookAt(mainCamera.transform);
             canvas.transform.rotation = Quaternion.Euler(0, canvas.transform.rotation.eulerAngles.y, 0);
         }

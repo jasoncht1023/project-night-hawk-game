@@ -1619,6 +1619,9 @@ MonoBehaviour:
   fireSoundClip: {fileID: 8300000, guid: a30b03c56f3bd9740bf9be83d53a16e5, type: 3}
   footstepClip: {fileID: 8300000, guid: 9b7a16a3f3c097147a288ff04bc1b785, type: 3}
   deathScreamClip: {fileID: 8300000, guid: bd49ce88d7782e44c8570454aa1b4010, type: 3}
+  confusedClip:
+  - {fileID: 8300000, guid: 3fd8ec27ec5f5cd4a8fc0b72bec8a467, type: 3}
+  - {fileID: 8300000, guid: 12dbf1cdcae45bc47bb035381ebad643, type: 3}
   runningFootstepInterval: 0.35
   walkingFootstepInterval: 0.5
   muzzleFlash: {fileID: 7849515026848524359}
