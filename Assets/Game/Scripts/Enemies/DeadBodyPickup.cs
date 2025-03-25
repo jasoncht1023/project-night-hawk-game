@@ -10,6 +10,7 @@ public class DeadBodyPickup : MonoBehaviour {
     public float gravity = 9.81f;
     public float fallingSpeedMultiplier = 2f;
     public bool isPickedUp = false;
+    public bool isStabDeath = false;
     NavMeshAgent agent;
     Vector3 velocity;
     Animator playerAnimator;
@@ -57,6 +58,9 @@ public class DeadBodyPickup : MonoBehaviour {
 
         transform.position = holdPosition.position;
         transform.rotation = holdPosition.rotation;
+        if (isStabDeath) {
+            transform.Rotate(0f, 90f, 0f, Space.Self);
+        }
 
         velocity = Vector3.zero;
 

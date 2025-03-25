@@ -60,28 +60,15 @@ public class FiringController : MonoBehaviour {
         if (Physics.Raycast(firePoint.position, firePoint.forward, out hit, fireRange)) {
             Debug.Log("Hit " + hit.transform.name);
 
-            // Get Soldier component based on hit location
-            Soldier soldier;
+            Soldier soldier = hit.transform.GetComponentInParent<Soldier>();
 
             if (hit.transform.name == "mixamorig:Head") {
-                soldier = hit.transform.parent.parent.parent.parent.parent.parent.GetComponent<Soldier>();
-
                 if (soldier != null && soldier.enabled) {
                     soldier.characterDie();
                     CreateBloodEffect(hit);
                 }
             }
             else {
-                if (hit.transform.name == "mixamorig:LeftArm" || hit.transform.name == "mixamorig:RightArm") {
-                    soldier = hit.transform.parent.parent.parent.parent.parent.parent.GetComponent<Soldier>();
-                }
-                else if (hit.transform.name == "mixamorig:LeftForeArm" || hit.transform.name == "mixamorig:RightForeArm") {
-                    soldier = hit.transform.parent.parent.parent.parent.parent.parent.parent.GetComponent<Soldier>();
-                }
-                else {
-                    soldier = hit.transform.GetComponent<Soldier>();
-                }
-
                 if (soldier != null && soldier.enabled) {
                     soldier.characterHitDamage(damage);
                     CreateBloodEffect(hit);

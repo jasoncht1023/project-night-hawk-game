@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class EnemyUIManager : MonoBehaviour {
-    public Camera mainCamera;
+    private Camera mainCamera;
     public Canvas canvas;
 
     [Header("Alert Status")]
@@ -16,8 +16,9 @@ public class EnemyUIManager : MonoBehaviour {
 
     private void Update() {
         if (mainCamera != null) {
+            Debug.Log(mainCamera);
             canvas.transform.LookAt(mainCamera.transform);
-            canvas.transform.rotation = Quaternion.Euler(0, transform.rotation.eulerAngles.y, 0);
+            canvas.transform.rotation = Quaternion.Euler(0, canvas.transform.rotation.eulerAngles.y, 0);
         }
     }
 
