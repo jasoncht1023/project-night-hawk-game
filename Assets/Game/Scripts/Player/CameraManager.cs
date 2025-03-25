@@ -35,11 +35,13 @@ public class CameraManager : MonoBehaviour {
         Cursor.visible = false;
 
         playerTransform = FindFirstObjectByType<PlayerManager>().transform;
+        inputManager = FindFirstObjectByType<InputManager>();
         defaultPivotLocalPosition = cameraPivot.localPosition;
+
+        lookAngle = transform.rotation.eulerAngles.y;
     }
 
     void Update() {
-        inputManager = FindFirstObjectByType<InputManager>();
         playerMovement = FindFirstObjectByType<PlayerMovement>();
     }
 
