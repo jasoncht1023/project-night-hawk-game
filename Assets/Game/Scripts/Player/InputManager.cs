@@ -1,3 +1,4 @@
+using SunTemple;
 using System.Collections;
 using UnityEngine;
 
@@ -8,6 +9,8 @@ public class InputManager : MonoBehaviour {
     AnimatorManager animatorManager;
 
     PlayerMovement playerMovement;
+
+    public static InputManager instance;
 
     public float moveAmount;
 
@@ -35,6 +38,7 @@ public class InputManager : MonoBehaviour {
     private void Awake() {
         animatorManager = GetComponent<AnimatorManager>();
         playerMovement = GetComponent<PlayerMovement>();
+        instance = this;
     }
 
     private void OnEnable() {
