@@ -2,17 +2,13 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class EnemyUIManager : MonoBehaviour {
-    private Camera mainCamera;
+    public Camera mainCamera;
     public Canvas canvas;
 
     [Header("Alert Status")]
     public GameObject alertedImage;
     public GameObject engagedImage;
     public Slider detectionSlider;
-
-    private void Start() {
-        mainCamera = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();        
-    }
 
     private void Update() {
         if (mainCamera != null) {

@@ -31,7 +31,7 @@ public class GameManager : MonoBehaviour {
     private void Start() {
         inputManager = FindFirstObjectByType<InputManager>();
         firingController = GetComponent<FiringController>();
-        player = GameObject.FindGameObjectWithTag("Player");
+        player = transform.gameObject;
         playerAudioSource = GetComponent<AudioSource>();
         pistol.SetActive(false);
         firingController.enabled = false;
