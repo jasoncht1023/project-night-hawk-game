@@ -112,7 +112,7 @@ public class MinimapMarker : MonoBehaviour {
 
         // Parent the marker to the GameObject it represents
         markerObject.transform.parent = obj.transform;
-        markerObject.transform.localPosition = new Vector3(0f, 30f, 0f);
+        markerObject.transform.localPosition = new Vector3(0f, 100f, 0f);
         markerObject.transform.localRotation = Quaternion.Euler(90f, 0f, 0f);
 
         // Add to tracking dictionary
