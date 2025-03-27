@@ -10,14 +10,10 @@ public class EnemyUIManager : MonoBehaviour {
     public GameObject engagedImage;
     public Slider detectionSlider;
 
-    private void Start() {
-        mainCamera = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();        
-    }
-
     private void Update() {
         if (mainCamera != null) {
             canvas.transform.LookAt(mainCamera.transform);
-            canvas.transform.rotation = Quaternion.Euler(0, transform.rotation.eulerAngles.y, 0);
+            canvas.transform.rotation = Quaternion.Euler(0, canvas.transform.rotation.eulerAngles.y, 0);
         }
     }
 

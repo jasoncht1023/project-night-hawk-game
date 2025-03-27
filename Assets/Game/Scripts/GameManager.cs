@@ -5,6 +5,7 @@ public class GameManager : MonoBehaviour {
     PlayerMovement playerMovement;
     PlayerUIManager playerUIManager;
     CameraManager cameraManager;
+    FiringController firingController;
 
     public GameObject pistol;
     public Animator animator;
@@ -29,9 +30,11 @@ public class GameManager : MonoBehaviour {
 
     private void Start() {
         inputManager = FindFirstObjectByType<InputManager>();
-        player = GameObject.FindGameObjectWithTag("Player");
+        firingController = GetComponent<FiringController>();
+        player = transform.gameObject;
         playerAudioSource = GetComponent<AudioSource>();
         pistol.SetActive(false);
+        firingController.enabled = false;
     }
 
     private void Update() {
@@ -44,6 +47,7 @@ public class GameManager : MonoBehaviour {
             pistol.SetActive(!pistol.activeSelf);
             cameraManager.isHoldingPistol = pistol.activeSelf;
             playerUIManager.UpdateWeaponSelection(pistol.activeSelf);
+            firingController.enabled = pistol.activeSelf;
             inputManager.SwitchWeaponDone();
         }
         // Switch to scope animation when holding pistol and scope

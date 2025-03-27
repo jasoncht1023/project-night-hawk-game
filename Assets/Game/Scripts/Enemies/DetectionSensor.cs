@@ -209,7 +209,7 @@ public class DetectionSensor : MonoBehaviour {
                 objectList.Add(obj);
             }
 
-            if (objectList.Count == size) {
+            if (size != 0 && objectList.Count == size) {
                 break;
             }
         }

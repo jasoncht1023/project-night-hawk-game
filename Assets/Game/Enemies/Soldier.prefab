@@ -1608,12 +1608,20 @@ MonoBehaviour:
   shootingRange: 100
   shootingRaycastPosition: {fileID: 416986812609038852}
   timeBetweenShooting: 3
+  maxAccuracy: 0.9
+  minAccuracy: 0.3
+  distanceAccuracyFactor: 0.6
+  runningAccuracyPenalty: 0.5
+  walkingAccuracyPenalty: 0.2
   isAlerted: 0
   isEngaged: 0
   soundAudioSource: {fileID: 0}
   fireSoundClip: {fileID: 8300000, guid: a30b03c56f3bd9740bf9be83d53a16e5, type: 3}
   footstepClip: {fileID: 8300000, guid: 9b7a16a3f3c097147a288ff04bc1b785, type: 3}
   deathScreamClip: {fileID: 8300000, guid: bd49ce88d7782e44c8570454aa1b4010, type: 3}
+  confusedClip:
+  - {fileID: 8300000, guid: 3fd8ec27ec5f5cd4a8fc0b72bec8a467, type: 3}
+  - {fileID: 8300000, guid: 12dbf1cdcae45bc47bb035381ebad643, type: 3}
   runningFootstepInterval: 0.35
   walkingFootstepInterval: 0.5
   muzzleFlash: {fileID: 7849515026848524359}
@@ -1635,6 +1643,7 @@ MonoBehaviour:
   gravity: 9.81
   fallingSpeedMultiplier: 2
   isPickedUp: 0
+  isStabDeath: 0
 --- !u!114 &6267982767871957510
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1655,7 +1664,7 @@ MonoBehaviour:
   scanFrequnecy: 30
   layers:
     serializedVersion: 2
-    m_Bits: 8
+    m_Bits: 136
   occlusionLayers:
     serializedVersion: 2
     m_Bits: 1
@@ -1671,7 +1680,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d20f199749e4c0479f730f817d2e59b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mainCamera: {fileID: 0}
   canvas: {fileID: 966164085370174167}
   alertedImage: {fileID: 1413168860282506464}
   engagedImage: {fileID: 8796011455260290370}
@@ -2404,7 +2412,8 @@ GameObject:
   m_Component:
   - component: {fileID: 7771515607655561428}
   - component: {fileID: 2487603412456398905}
-  m_Layer: 6
+  - component: {fileID: 3545340151617286951}
+  m_Layer: 7
   m_Name: Body
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2502,6 +2511,29 @@ SkinnedMeshRenderer:
     m_Center: {x: 0.000011652708, y: -0.019705176, z: -0.027774788}
     m_Extent: {x: 0.6812192, y: 0.8538486, z: 0.20744261}
   m_DirtyAABB: 0
+--- !u!136 &3545340151617286951
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5057406939949988645}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 0
+  serializedVersion: 2
+  m_Radius: 0.01
+  m_Height: 1
+  m_Direction: 1
+  m_Center: {x: -0.03, y: 0.8, z: 0}
 --- !u!1 &5073094851393971133
 GameObject:
   m_ObjectHideFlags: 0
