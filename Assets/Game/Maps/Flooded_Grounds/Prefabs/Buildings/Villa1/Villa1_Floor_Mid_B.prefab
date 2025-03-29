@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 3346600}
   - component: {fileID: 2351392}
   - component: {fileID: 6591316}
+  - component: {fileID: -3957317253565782259}
   m_Layer: 0
   m_Name: Villa1_Floor_Mid_B
   m_TagString: Untagged
@@ -108,3 +109,23 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 8.000001, y: 0.31369385, z: 3.9999995}
   m_Center: {x: 3.9999995, y: -0.14684479, z: 1.9999998}
+--- !u!114 &-3957317253565782259
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 161186}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e3fdca004f2d45fe8abbed571a8abd5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SerializedVersion: 0
+  m_OverrideArea: 0
+  m_Area: 0
+  m_OverrideGenerateLinks: 0
+  m_GenerateLinks: 0
+  m_IgnoreFromBuild: 0
+  m_ApplyToChildren: 1
+  m_AffectedAgents: ffffffff

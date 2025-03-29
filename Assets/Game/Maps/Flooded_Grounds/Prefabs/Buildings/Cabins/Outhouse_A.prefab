@@ -12,7 +12,11 @@ GameObject:
   - component: {fileID: 3362198}
   - component: {fileID: 2382430}
   - component: {fileID: 6543928}
+<<<<<<< Updated upstream
   - component: {fileID: 7933880926493249519}
+=======
+  - component: {fileID: 1320541989735267777}
+>>>>>>> Stashed changes
   m_Layer: 0
   m_Name: Outhouse_A
   m_TagString: Untagged
@@ -109,7 +113,11 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 2.4013028, y: 4.626704, z: 2.9667132}
   m_Center: {x: 0.0002117157, y: 2.2548294, z: 0.1046685}
+<<<<<<< Updated upstream
 --- !u!208 &7933880926493249519
+=======
+--- !u!208 &1320541989735267777
+>>>>>>> Stashed changes
 NavMeshObstacle:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

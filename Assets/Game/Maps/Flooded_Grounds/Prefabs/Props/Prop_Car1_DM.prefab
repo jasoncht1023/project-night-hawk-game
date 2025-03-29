@@ -290,6 +290,7 @@ GameObject:
   - component: {fileID: 3392748}
   - component: {fileID: 2362188}
   - component: {fileID: 6549902}
+  - component: {fileID: 6675425312372643280}
   m_Layer: 8
   m_Name: lo_Prop_Car1_DM_LOD0
   m_TagString: Untagged
@@ -386,3 +387,19 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 6.281651, y: 2.3413537, z: 2.9165783}
   m_Center: {x: -0.3339045, y: 1.3052229, z: -0.2540068}
+--- !u!208 &6675425312372643280
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 159872}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 3.141, y: 1.171, z: 1.4580001}
+  m_MoveThreshold: 0.1
+  m_Carve: 0
+  m_CarveOnlyStationary: 1
+  m_Center: {x: -0.33400002, y: 1.3050001, z: -0.254}
+  m_TimeToStationary: 0.5

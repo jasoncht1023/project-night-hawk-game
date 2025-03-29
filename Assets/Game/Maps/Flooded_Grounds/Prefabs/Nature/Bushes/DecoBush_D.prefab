@@ -12,7 +12,11 @@ GameObject:
   - component: {fileID: 3324528}
   - component: {fileID: 2339440}
   - component: {fileID: 6593184}
+<<<<<<< Updated upstream
   - component: {fileID: -6837004058716111302}
+=======
+  - component: {fileID: -8945145606793246429}
+>>>>>>> Stashed changes
   m_Layer: 0
   m_Name: DecoBush_D
   m_TagString: Untagged
@@ -109,7 +113,11 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 4.0294194, y: 3.179661, z: 18.676584}
   m_Center: {x: -1.9267849, y: 1.5410348, z: 9.243421}
+<<<<<<< Updated upstream
 --- !u!208 &-6837004058716111302
+=======
+--- !u!208 &-8945145606793246429
+>>>>>>> Stashed changes
 NavMeshObstacle:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

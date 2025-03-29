@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 3361574}
   - component: {fileID: 2368672}
   - component: {fileID: 6441908}
+  - component: {fileID: -2972469139727295890}
   m_Layer: 0
   m_Name: IndBuilding2_End_A
   m_TagString: Untagged
@@ -109,3 +110,19 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 4300000, guid: 8b54c91ea215d384883618411826f44b, type: 3}
+--- !u!208 &-2972469139727295890
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 148556}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 6.3, y: 4.5880003, z: 1.355}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 1
+  m_Center: {x: -0.065000005, y: 4.583, z: 1.105}
+  m_TimeToStationary: 0.5

@@ -120,7 +120,11 @@ GameObject:
   - component: {fileID: 3350744}
   - component: {fileID: 2383128}
   - component: {fileID: 6547330}
+<<<<<<< Updated upstream
   - component: {fileID: 3863770383400738105}
+=======
+  - component: {fileID: 4272890495300064282}
+>>>>>>> Stashed changes
   m_Layer: 0
   m_Name: Struct_Fence2_Mid_A_LOD0
   m_TagString: Untagged
@@ -217,7 +221,11 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 6.625373, y: 1.3483493, z: 0.20825693}
   m_Center: {x: -3.2194433, y: 0.66581154, z: 0.06567007}
+<<<<<<< Updated upstream
 --- !u!208 &3863770383400738105
+=======
+--- !u!208 &4272890495300064282
+>>>>>>> Stashed changes
 NavMeshObstacle:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

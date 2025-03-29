@@ -120,7 +120,11 @@ GameObject:
   - component: {fileID: 3332226}
   - component: {fileID: 2335066}
   - component: {fileID: 6524942}
+<<<<<<< Updated upstream
   - component: {fileID: 7599310666593637940}
+=======
+  - component: {fileID: 6789137628596564788}
+>>>>>>> Stashed changes
   m_Layer: 8
   m_Name: lo_Prop_Car_A_LOD0
   m_TagString: Untagged
@@ -217,7 +221,11 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 6.281651, y: 2.5157897, z: 2.7315502}
   m_Center: {x: -0.3339045, y: 1.2180048, z: -0.16149282}
+<<<<<<< Updated upstream
 --- !u!208 &7599310666593637940
+=======
+--- !u!208 &6789137628596564788
+>>>>>>> Stashed changes
 NavMeshObstacle:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -231,7 +239,11 @@ NavMeshObstacle:
   m_MoveThreshold: 0.1
   m_Carve: 1
   m_CarveOnlyStationary: 1
+<<<<<<< Updated upstream
   m_Center: {x: -0.33400002, y: 1.218, z: -0.162}
+=======
+  m_Center: {x: -0.33400002, y: 1.218, z: -0.16100001}
+>>>>>>> Stashed changes
   m_TimeToStationary: 0.5
 --- !u!1 &146946
 GameObject:

@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 3378942}
   - component: {fileID: 2387890}
   - component: {fileID: 6412512}
+  - component: {fileID: -7765924236385775282}
   m_Layer: 0
   m_Name: Cabin2_Ext1
   m_TagString: Untagged
@@ -109,3 +110,19 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 4300000, guid: 562ec34fab32b5343886256ef273f218, type: 3}
+--- !u!208 &-7765924236385775282
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 125380}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 6.201, y: 3.2120001, z: 2.43}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 1
+  m_Center: {x: -0.002, y: 3.21, z: 1.4640001}
+  m_TimeToStationary: 0.5

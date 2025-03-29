@@ -12,7 +12,11 @@ GameObject:
   - component: {fileID: 3357884}
   - component: {fileID: 2306234}
   - component: {fileID: 6425064}
+<<<<<<< Updated upstream
   - component: {fileID: -6333753930664516352}
+=======
+  - component: {fileID: -4097266294933350939}
+>>>>>>> Stashed changes
   m_Layer: 0
   m_Name: Cabin1_DM
   m_TagString: Untagged
@@ -110,7 +114,11 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 4300000, guid: 7729cb95abf30e449a2f0bd9f6a94191, type: 3}
+<<<<<<< Updated upstream
 --- !u!208 &-6333753930664516352
+=======
+--- !u!208 &-4097266294933350939
+>>>>>>> Stashed changes
 NavMeshObstacle:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

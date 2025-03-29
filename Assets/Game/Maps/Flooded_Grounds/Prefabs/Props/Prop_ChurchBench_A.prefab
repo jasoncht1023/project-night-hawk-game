@@ -120,6 +120,7 @@ GameObject:
   - component: {fileID: 3348206}
   - component: {fileID: 2314332}
   - component: {fileID: 6522516}
+  - component: {fileID: 8908195706817433728}
   m_Layer: 8
   m_Name: lo_Prop_ChurchBench_A_LOD0
   m_TagString: Untagged
@@ -216,6 +217,22 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 2.8562033, y: 1.3, z: 1.1}
   m_Center: {x: -1.3281018, y: 0.65, z: -0.35000008}
+--- !u!208 &8908195706817433728
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 132168}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 1.4280001, y: 0.65000004, z: 0.55}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 1
+  m_Center: {x: -1.3280001, y: 0.65000004, z: -0.35000002}
+  m_TimeToStationary: 0.5
 --- !u!1 &144546
 GameObject:
   m_ObjectHideFlags: 0

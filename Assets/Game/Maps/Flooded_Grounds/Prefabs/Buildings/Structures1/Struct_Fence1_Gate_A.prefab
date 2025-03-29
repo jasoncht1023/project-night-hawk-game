@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 3343704}
   - component: {fileID: 2395164}
   - component: {fileID: 6445992}
+  - component: {fileID: 1649738905570118030}
   m_Layer: 0
   m_Name: Struct_Fence1_Gate_A_LOD0
   m_TagString: Untagged
@@ -109,6 +110,22 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 4300004, guid: 4d6f4544c5e853f46a65866bb41a68b3, type: 3}
+--- !u!208 &1649738905570118030
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 104030}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 1.15, y: 3.5010002, z: 0.777}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 1
+  m_Center: {x: 4, y: 3.4910002, z: -0.006}
+  m_TimeToStationary: 0.5
 --- !u!1 &135856
 GameObject:
   m_ObjectHideFlags: 0
@@ -247,7 +264,11 @@ GameObject:
   - component: {fileID: 3345098}
   - component: {fileID: 2366614}
   - component: {fileID: 6493566}
+<<<<<<< Updated upstream
   - component: {fileID: 2183281865473452743}
+=======
+  - component: {fileID: 5917437437947156755}
+>>>>>>> Stashed changes
   m_Layer: 0
   m_Name: Struct_Fence1_Gate_A_LOD1
   m_TagString: Untagged
@@ -345,7 +366,11 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 4300004, guid: 4d6f4544c5e853f46a65866bb41a68b3, type: 3}
+<<<<<<< Updated upstream
 --- !u!208 &2183281865473452743
+=======
+--- !u!208 &5917437437947156755
+>>>>>>> Stashed changes
 NavMeshObstacle:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -355,11 +380,19 @@ NavMeshObstacle:
   m_Enabled: 1
   serializedVersion: 3
   m_Shape: 1
+<<<<<<< Updated upstream
   m_Extents: {x: 1.22, y: 3.5010002, z: 0.777}
   m_MoveThreshold: 0.1
   m_Carve: 1
   m_CarveOnlyStationary: 1
   m_Center: {x: 4, y: 3.4910002, z: 0}
+=======
+  m_Extents: {x: 1.15, y: 3.5010002, z: 0.777}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 1
+  m_Center: {x: -4, y: 3.4910002, z: -0.006}
+>>>>>>> Stashed changes
   m_TimeToStationary: 0.5
 --- !u!1 &195380
 GameObject:
