@@ -78,6 +78,8 @@ public class Soldier : MonoBehaviour {
 
     [Header("Visual Effects")]
     public ParticleSystem muzzleFlash;
+    public ParticleSystem gunSmoke;
+    public Transform gunSmokePoint;
     public GameObject bloodEffect;
 
     private void Start() {
@@ -361,6 +363,16 @@ public class Soldier : MonoBehaviour {
             animator.SetTrigger("Fire");
             RaycastHit hit;
             muzzleFlash.Play();
+
+            // Instantiate a gun smoke effect
+            ParticleSystem smokeInstance = Instantiate(
+                gunSmoke,
+                gunSmokePoint.position,
+                gunSmokePoint.rotation
+            );
+            smokeInstance.Play();
+            Destroy(smokeInstance.gameObject, 5);
+
             soundAudioSource.PlayOneShot(fireSoundClip);
 
             // Calculate position to aim at (player's chest)
