@@ -5,8 +5,8 @@ public class MinimapMarker : MonoBehaviour {
     [Header("Marker Setup")]
     public Sprite playerSprite;     // Sprite for player markers
     public Sprite enemySprite;      // Sprite for enemy markers
-    public string markerLayerName = "MinimapLayer";
-    public string playerTag = "Player";
+    private string markerLayerName = "MinimapLayer";
+    private string playerTag = "Player";
 
     private Camera minimapCamera;
     private Dictionary<GameObject, GameObject> objectToMarker = new Dictionary<GameObject, GameObject>();
