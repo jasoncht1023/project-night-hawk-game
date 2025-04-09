@@ -177,6 +177,7 @@ GameObject:
   - component: {fileID: 3346806}
   - component: {fileID: 2367802}
   - component: {fileID: 6519386}
+  - component: {fileID: 215120819396258677}
   m_Layer: 8
   m_Name: lo_Prop_Pulpit_A_LOD0
   m_TagString: Untagged
@@ -273,3 +274,19 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 2.15718, y: 2.1379793, z: 1.6449585}
   m_Center: {x: -0.0030561686, y: 1.0682381, z: 0.1708428}
+--- !u!208 &215120819396258677
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 189966}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 1.079, y: 1.069, z: 0.822}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 1
+  m_Center: {x: -0.003, y: 1.0680001, z: 0.171}
+  m_TimeToStationary: 0.5

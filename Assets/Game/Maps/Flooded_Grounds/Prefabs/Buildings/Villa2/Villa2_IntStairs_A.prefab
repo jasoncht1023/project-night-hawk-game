@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 3333172}
   - component: {fileID: 2393238}
   - component: {fileID: 6496916}
+  - component: {fileID: 3865693387364451835}
   m_Layer: 0
   m_Name: Villa2_IntStairs_A
   m_TagString: Untagged
@@ -109,3 +110,23 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 4300000, guid: f3acf8c6d2709d747bec015a6281a927, type: 3}
+--- !u!114 &3865693387364451835
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 161730}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e3fdca004f2d45fe8abbed571a8abd5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SerializedVersion: 0
+  m_OverrideArea: 0
+  m_Area: 0
+  m_OverrideGenerateLinks: 0
+  m_GenerateLinks: 0
+  m_IgnoreFromBuild: 0
+  m_ApplyToChildren: 1
+  m_AffectedAgents: ffffffff

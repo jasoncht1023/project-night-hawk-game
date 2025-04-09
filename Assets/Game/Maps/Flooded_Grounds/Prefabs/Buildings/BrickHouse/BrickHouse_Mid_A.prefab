@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 3390034}
   - component: {fileID: 2338262}
   - component: {fileID: 6476754}
+  - component: {fileID: 3480564643442652391}
   m_Layer: 0
   m_Name: BrickHouse_Mid_A
   m_TagString: Untagged
@@ -109,3 +110,19 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 4300002, guid: fefca4b56654b8945afe1beff73c2752, type: 3}
+--- !u!208 &3480564643442652391
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 182950}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 2, y: 8.259001, z: 6.4880004}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 1
+  m_Center: {x: 2, y: 8.257, z: 0.013}
+  m_TimeToStationary: 0.5

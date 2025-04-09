@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 3324206}
   - component: {fileID: 2371610}
   - component: {fileID: 6451302}
+  - component: {fileID: 3578764394912387846}
   m_Layer: 0
   m_Name: Barn1_End_B
   m_TagString: Untagged
@@ -109,3 +110,19 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 4300000, guid: 19fcdc837dbc1c84f89a2780f00dcd99, type: 3}
+--- !u!208 &3578764394912387846
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 138322}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 6.806, y: 5.728, z: 4.117}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 1
+  m_Center: {x: 0.0050000004, y: 5.728, z: -0.095000006}
+  m_TimeToStationary: 0.5
