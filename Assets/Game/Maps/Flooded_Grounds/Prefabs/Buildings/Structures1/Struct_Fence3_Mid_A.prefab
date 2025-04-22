@@ -228,6 +228,7 @@ GameObject:
   - component: {fileID: 3360604}
   - component: {fileID: 2388506}
   - component: {fileID: 6549602}
+  - component: {fileID: 4314898711382438584}
   m_Layer: 0
   m_Name: Struct_Fence3_Mid_A_LOD0
   m_TagString: Untagged
@@ -324,6 +325,22 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 6.577719, y: 2.4171305, z: 0.3146549}
   m_Center: {x: -3.2853897, y: 1.111855, z: 0.07337591}
+--- !u!208 &4314898711382438584
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 169960}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 3.2890003, y: 1.2090001, z: 0.157}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 1
+  m_Center: {x: -3.285, y: 1.1120001, z: 0.07300001}
+  m_TimeToStationary: 0.5
 --- !u!1 &173866
 GameObject:
   m_ObjectHideFlags: 0

@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 3389486}
   - component: {fileID: 2338632}
   - component: {fileID: 6552552}
+  - component: {fileID: 1379712665522134727}
   m_Layer: 0
   m_Name: Struct_FloodWall_B_LOD0
   m_TagString: Untagged
@@ -108,6 +109,22 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 50.47337, y: 18.122732, z: 5.724446}
   m_Center: {x: -24.781565, y: 8.938329, z: 2.508376}
+--- !u!208 &1379712665522134727
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 114410}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 25.237001, y: 9.061001, z: 2.8620002}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 1
+  m_Center: {x: -24.782001, y: 8.938001, z: 2.5080001}
+  m_TimeToStationary: 0.5
 --- !u!1 &116550
 GameObject:
   m_ObjectHideFlags: 0

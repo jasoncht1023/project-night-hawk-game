@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 3343704}
   - component: {fileID: 2395164}
   - component: {fileID: 6445992}
+  - component: {fileID: 4156291142946667241}
   m_Layer: 0
   m_Name: Struct_Fence1_Gate_A_LOD0
   m_TagString: Untagged
@@ -109,6 +110,22 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 4300004, guid: 4d6f4544c5e853f46a65866bb41a68b3, type: 3}
+--- !u!208 &4156291142946667241
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 104030}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 1.285, y: 3.5010002, z: 0.777}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 1
+  m_Center: {x: -4, y: 3.4910002, z: -0.006}
+  m_TimeToStationary: 0.5
 --- !u!1 &135856
 GameObject:
   m_ObjectHideFlags: 0
@@ -230,6 +247,7 @@ GameObject:
   - component: {fileID: 3345098}
   - component: {fileID: 2366614}
   - component: {fileID: 6493566}
+  - component: {fileID: 7941197367324652348}
   m_Layer: 0
   m_Name: Struct_Fence1_Gate_A_LOD1
   m_TagString: Untagged
@@ -327,6 +345,22 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 4300004, guid: 4d6f4544c5e853f46a65866bb41a68b3, type: 3}
+--- !u!208 &7941197367324652348
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 145018}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 1.285, y: 3.5010002, z: 0.777}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 1
+  m_Center: {x: 4, y: 3.4910002, z: -0.006}
+  m_TimeToStationary: 0.5
 --- !u!1 &195380
 GameObject:
   m_ObjectHideFlags: 0

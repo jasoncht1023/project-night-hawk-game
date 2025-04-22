@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 3323186}
   - component: {fileID: 2364118}
   - component: {fileID: 6428260}
+  - component: {fileID: 5141836737337037125}
   m_Layer: 0
   m_Name: IndBuilding2_Mid_A
   m_TagString: Untagged
@@ -109,3 +110,19 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 4300000, guid: 4975e2d81a915c84394157cd3b9be5c1, type: 3}
+--- !u!208 &5141836737337037125
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 197834}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 6.8580003, y: 4.3230004, z: 3.0000002}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 1
+  m_Center: {x: 0.071, y: 4.3230004, z: 3.0000002}
+  m_TimeToStationary: 0.5
