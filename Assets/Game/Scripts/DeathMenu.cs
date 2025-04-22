@@ -6,6 +6,7 @@ using UnityEngine.Playables; // For handling cutscenes
 public class DeathMenu : MonoBehaviour {
     InputManager inputManager;
     CutsceneTrigger cutsceneTrigger;
+    CutsceneController cutsceneController;
     public GameObject deathMenuUI; // Assign the death menu panel in the Inspector
     public string mainMenuSceneName = "MainMenuScene"; // Set the name of your main menu scene
 
@@ -17,6 +18,7 @@ public class DeathMenu : MonoBehaviour {
     void Start() {
         inputManager = FindFirstObjectByType<InputManager>();
         cutsceneTrigger = FindFirstObjectByType<CutsceneTrigger>();
+        cutsceneController = FindFirstObjectByType<CutsceneController>();
         playerMovement = FindFirstObjectByType<PlayerMovement>();
 
         // Ensure the death menu is hidden at the start
@@ -51,8 +53,6 @@ public class DeathMenu : MonoBehaviour {
         // Show cursor for UI interaction
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
-
-        Debug.Log("Player died. Death menu shown.");
     }
 
     public void RestartLevel() {
@@ -60,15 +60,15 @@ public class DeathMenu : MonoBehaviour {
         Time.timeScale = 1f;
         inputManager.isPaused = false;
 
-        // When the scene reloads, we want to make sure cutscenes will play again
-        // Since scene reload will create new instances of all objects, we don't need to
-        // reset the current cutscene triggers - Unity will handle that for us.
-        // The new CutsceneTrigger instances will have hasTriggered = false by default
-
         // Reload the current scene
         Scene currentScene = SceneManager.GetActiveScene();
         SceneManager.LoadScene(currentScene.name);
-        cutsceneTrigger.triggerCutscene();
+        if (currentScene.name == "Chapter1") {
+            cutsceneTrigger.triggerCutscene();
+        }
+        // chapter2 cutscene does not play automatically and i dont know why
+        else {
+        }
 
         Debug.Log("Restarting level: " + currentScene.name);
     }
