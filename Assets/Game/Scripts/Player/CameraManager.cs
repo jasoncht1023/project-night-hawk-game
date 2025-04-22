@@ -24,7 +24,7 @@ public class CameraManager : MonoBehaviour {
     private Vector3 defaultPivotLocalPosition;
 
     [Header("Camera Collision")]
-    private float cameraCollisionRadius = 0.5f;
+    private float cameraCollisionRadius = 0.2f;
     public LayerMask collisionLayers;
     private float minCameraDistance = 0f;
     private float maxCameraDistance = 3.5f;
@@ -32,6 +32,9 @@ public class CameraManager : MonoBehaviour {
     private float targetCameraDistance;
     private float currentCameraDistance;
     private RaycastHit cameraCollisionHit;
+    private bool collisionDetected = false;
+    private float smoothTransitionTimer = 0f;
+    private float smoothTransitionDelay = 10f; // Delay before starting to zoom back out
 
     [Header("Scoped Settings")]
     public float scopedFOV = 35f;
@@ -144,45 +147,90 @@ public class CameraManager : MonoBehaviour {
         float distanceToPlayer = directionFromCameraToPlayer.magnitude;
         directionFromCameraToPlayer.Normalize();
 
-        // Default to max distance if no obstacles
-        targetCameraDistance = maxCameraDistance;
+        // Reset collision flag for this frame
+        bool wasColliding = collisionDetected;
+        collisionDetected = false;
+
+        Vector3 adjustedStartPosition = playerTransform.position + new Vector3(0, 0.2f, 0);
+
+
+        // Line of sight check - direct ray from camera to player
+        if (Physics.Raycast(
+          camera.transform.position,
+          directionFromCameraToPlayer,
+          out RaycastHit lineOfSightHit,
+          distanceToPlayer,
+          collisionLayers)) {
+            // Ignore collision hit if it's the player
+            if (!(lineOfSightHit.collider.gameObject == playerTransform.gameObject)) {
+                Debug.Log("Line of sight hit distance: " + lineOfSightHit.collider.gameObject);
+                targetCameraDistance = Mathf.Lerp(targetCameraDistance, -1f, Time.deltaTime * cameraDistanceSpeed * 3f);
+                collisionDetected = true;
+            }
+        }
 
         // Check if anything is blocking between player and camera
-        if (Physics.SphereCast(
-            playerTransform.position,
+        else if (Physics.SphereCast(
+            adjustedStartPosition,
             cameraCollisionRadius,
             -directionFromPivotToPlayer,
             out cameraCollisionHit,
             maxCameraDistance,
             collisionLayers)) {
+            Debug.Log("CameraManager: SphereCast hit something." + cameraCollisionHit.collider.gameObject.name);
             Debug.Log("cameraCollisionHit.distance: " + cameraCollisionHit.distance);
-            // If we hit something, set target distance to the hit distance
-            targetCameraDistance = cameraCollisionHit.distance - 0.5f;
-        }
-
-        // Line of sight check - direct ray from camera to player
-        else if (Physics.Raycast(
-           camera.transform.position,
-           directionFromCameraToPlayer,
-           out RaycastHit lineOfSightHit,
-           distanceToPlayer,
-           collisionLayers)) {
-            // Ignore collision hit if it's the player
-            if (!(lineOfSightHit.collider.gameObject == playerTransform.gameObject)) {
-                targetCameraDistance = 0f;
+            // if gameObject name starts with "Player" ignore it
+            if (cameraCollisionHit.collider.gameObject.name.StartsWith("Struct_") || cameraCollisionHit.collider.gameObject.name == "Terrain") {
+                // If we hit something, smoothly adjust target distance to the hit distance
+                float newTargetDistance = cameraCollisionHit.distance - 1f;
+                targetCameraDistance = Mathf.Lerp(targetCameraDistance, newTargetDistance, Time.deltaTime * cameraDistanceSpeed * 2f);
+                collisionDetected = true;
             }
         }
 
-        Debug.Log("Target Camera Distance: " + targetCameraDistance);
+        // Check if camera pivot is inside a collider
+        else if (Physics.CheckSphere(cameraPivot.position, cameraCollisionRadius, collisionLayers, QueryTriggerInteraction.Ignore)) {
+            Debug.Log("CameraManager: Pivot started inside a collider. Forcing camera close.");
+            targetCameraDistance = Mathf.Lerp(targetCameraDistance, -1f, Time.deltaTime * cameraDistanceSpeed * 3f);
+            collisionDetected = true;
+        }
 
         // Ensure minimum distance
         targetCameraDistance = Mathf.Max(targetCameraDistance, minCameraDistance);
 
-        // Smoothly adjust current distance to target distance
-        currentCameraDistance = Mathf.Lerp(
+        // Handle transition back to maximum distance
+        if (!collisionDetected) {
+            // If we weren't colliding before, increment timer
+            if (!wasColliding) {
+                smoothTransitionTimer += Time.deltaTime;
+            }
+            else {
+                // Reset timer when we just stopped colliding
+                smoothTransitionTimer = 0f;
+            }
+
+            // Only start zooming back after a short delay to prevent oscillation
+            if (smoothTransitionTimer >= smoothTransitionDelay) {
+                // Before zooming out, check if there's a clear path to the maximum distance
+                float safeDistance = CheckMaxDistanceSafety();
+
+                // Gradually increase target distance to the safe maximum with improved smoothing
+                targetCameraDistance = Mathf.Lerp(targetCameraDistance, safeDistance,
+                    Time.deltaTime * (cameraDistanceSpeed * 0.2f));
+            }
+        }
+        else {
+            // Reset timer when colliding
+            smoothTransitionTimer = 0f;
+        }
+
+        // Double-smooth the transition - first smooth the target, then smooth the actual camera position
+        // This creates a more natural damping effect
+        currentCameraDistance = Mathf.SmoothDamp(
             currentCameraDistance,
             targetCameraDistance,
-            Time.deltaTime * cameraDistanceSpeed);
+            ref camFollowVelocity.x, // Using z component of existing velocity vector as ref
+            0.05f); // Smaller time means faster reaction, but smoother transition
     }
 
     private void HandleScopedFOV() {
@@ -194,5 +242,29 @@ public class CameraManager : MonoBehaviour {
             camera.fieldOfView = defaultFOV;
             isScoped = false;
         }
+    }
+
+    // Checks how far we can safely zoom out without hitting obstacles
+    private float CheckMaxDistanceSafety() {
+        // Direction from camera pivot to the desired maximum distance position
+        Vector3 pivotToMaxDistanceDirection = -transform.right; // Assuming camera is on X axis
+
+        // Check if there's anything blocking the path to maximum distance
+        if (Physics.SphereCast(
+            cameraPivot.position,
+            cameraCollisionRadius * 0.8f, // Slightly smaller radius for stability
+            pivotToMaxDistanceDirection,
+            out RaycastHit safetyHit,
+            maxCameraDistance - currentCameraDistance, // Only check the remaining distance
+            collisionLayers)) {
+
+            Debug.Log("CameraManager: SphereCast hit something while checking max distance." + safetyHit.collider.gameObject.name);
+
+            // Return the safe distance we can move to
+            return currentCameraDistance + safetyHit.distance - 0.2f; // Small buffer
+        }
+
+        // No obstacles found, can return to max distance
+        return maxCameraDistance;
     }
 }
