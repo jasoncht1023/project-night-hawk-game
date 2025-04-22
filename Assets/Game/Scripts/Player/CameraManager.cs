@@ -34,7 +34,7 @@ public class CameraManager : MonoBehaviour {
     private RaycastHit cameraCollisionHit;
     private bool collisionDetected = false;
     private float smoothTransitionTimer = 0f;
-    private float smoothTransitionDelay = 10f; // Delay before starting to zoom back out
+    private float smoothTransitionDelay = 0.5f; // Delay before starting to zoom back out
 
     [Header("Scoped Settings")]
     public float scopedFOV = 35f;
