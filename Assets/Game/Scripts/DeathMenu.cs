@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI; // For UI effects like blur
+using UnityEngine.Playables; // For handling cutscenes
 
 public class DeathMenu : MonoBehaviour {
     InputManager inputManager;
@@ -59,9 +60,15 @@ public class DeathMenu : MonoBehaviour {
         Time.timeScale = 1f;
         inputManager.isPaused = false;
 
+        // When the scene reloads, we want to make sure cutscenes will play again
+        // Since scene reload will create new instances of all objects, we don't need to
+        // reset the current cutscene triggers - Unity will handle that for us.
+        // The new CutsceneTrigger instances will have hasTriggered = false by default
+
         // Reload the current scene
         Scene currentScene = SceneManager.GetActiveScene();
         SceneManager.LoadScene(currentScene.name);
+        cutsceneTrigger.triggerCutscene();
 
         Debug.Log("Restarting level: " + currentScene.name);
     }
