@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement; // For scene management
 
 public class PlayerMovement : MonoBehaviour {
     [Header("Script Ref")]
@@ -213,8 +214,12 @@ public class PlayerMovement : MonoBehaviour {
     }
 
     void characterDie() {
-        //Debug.Log("Player Died");
-
+        // Just make sure health is 0
+        currentHealth = 0;
+        
+        // The DeathMenu component will check player health in its Update method
+        // and show the death menu when health is <= 0
+        Debug.Log("Player died");
     }
 
     private void PlayFootStepSound() {

@@ -6,9 +6,7 @@ public class PauseMenu : MonoBehaviour {
     InputManager inputManager;
 
     public GameObject pauseMenuUI; // Assign the pause menu panel in the Inspector
-    public string mainMenuSceneName = "MainMenu"; // Set the name of your main menu scene
-
-    private PlayerInput playerInput; // Optional: Reference if using PlayerInput component
+    public string mainMenuSceneName = "MainMenuScene"; // Set the name of your main menu scene
 
     void Start() {
         inputManager = FindFirstObjectByType<InputManager>();
@@ -71,20 +69,4 @@ public class PauseMenu : MonoBehaviour {
         Debug.Log("Loading Main Menu...");
     }
 
-    // --- Optional: Methods for New Input System Actions ---
-    // Call this method from a PlayerInput component's "Pause" action event
-    // public void OnPauseAction(InputAction.CallbackContext context)
-    // {
-    //     if (context.performed)
-    //     {
-    //         if (isPaused)
-    //         {
-    //             ResumeGame();
-    //         }
-    //         else
-    //         {
-    //             PauseGame();
-    //         }
-    //     }
-    // }
 }

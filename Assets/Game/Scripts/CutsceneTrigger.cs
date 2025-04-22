@@ -8,7 +8,7 @@ public class CutsceneTrigger : MonoBehaviour {
 
     PlayableDirector cutscene;
     public GameObject cutsceneObjects;
-    private bool hasTriggered = false;
+    public bool hasTriggered = false;
 
     public GameObject player;
     public GameObject soldiers;
@@ -27,15 +27,15 @@ public class CutsceneTrigger : MonoBehaviour {
                 playerCamera.SetActive(false);
                 cutsceneCamera.SetActive(true);
 
-                cutscene.Play();    
+                cutscene.Play();
                 cutscene.stopped += OnCutsceneStopped;
-                hasTriggered = true;    
+                hasTriggered = true;
             }
         }
     }
 
     private void OnCutsceneStopped(PlayableDirector director) {
-        Time.timeScale = 0;         
-        cutscene.stopped -= OnCutsceneStopped; 
+        Time.timeScale = 0;
+        cutscene.stopped -= OnCutsceneStopped;
     }
 }
