@@ -13,6 +13,13 @@ public class PlayerUIManager : MonoBehaviour {
     [Header("Weapon Selection UI")]
     public Image weaponSelectionBorderImage;
 
+    [Header("Action UI")]
+    public Text ActionText;
+
+    [Header("QuestText UI")]
+    public Text QuestTitle;
+    public Text QuestObjectives;
+
     public void UpdateMagazineCount(int magazine) {
         currentMagazineText.text = magazine.ToString();
     }
@@ -35,5 +42,14 @@ public class PlayerUIManager : MonoBehaviour {
 
     public void UpdateHealthBar(int currentHealth, int maxHealth) {
         healthBar.fillAmount = Mathf.Clamp01(currentHealth / (float) maxHealth);
+    }
+
+    public void ActionUIText(string Text) {
+        ActionText.text = Text;
+    }
+
+    public void QuestText(string Title, string Objectives) {
+        QuestTitle.text = Title;
+        QuestObjectives.text = Objectives;
     }
 }

@@ -19,6 +19,12 @@ public class DeadBodyPickup : MonoBehaviour {
     private bool wasPistolActive;
     private bool isLooted = false;
 
+    private PlayerUIManager playerUIManager;
+    public string playerTag = "Player";
+    private GameObject Player;
+    private bool playerInRange = false;
+    private readonly float MaxDistance = 2.0f;
+
     private void Start() {
         agent = GetComponent<NavMeshAgent>();
         GameObject playerObject = GameObject.Find("Player");
@@ -28,23 +34,85 @@ public class DeadBodyPickup : MonoBehaviour {
         gameManager = playerObject.GetComponent<GameManager>();
         playerAnimator = playerObject.GetComponent<Animator>();
         holdPosition = GameObject.FindGameObjectWithTag("PlayerCarryDeadbodyPosition").transform;
+        playerUIManager = FindFirstObjectByType<PlayerUIManager>();
+        Player = GameObject.FindGameObjectWithTag(playerTag);
     }
 
     private void Update() {
-        if (inputManager.interactInput == true) {
-            if (isPickedUp == true) {
-                DetachBody();
-                playerMovement.SetCarrying(false);
+        //if (inputManager.interactInput == true) {
+        //    if (isPickedUp == true) {
+        //        DetachBody();
+        //        playerMovement.SetCarrying(false);
+        //    }
+        //    else if (playerMovement.isCarrying == false && Vector3.Distance(playerTransfrom.position, transform.position) <= pickupRange && Time.time >= playerMovement.nextPickupTime) {
+        //        playerMovement.SetCarrying(true);
+        //        AttachBody();
+        //    }
+        //}
+
+        //if (inputManager.lootInput == true && isPickedUp == false && isLooted == false && Vector3.Distance(playerTransfrom.position, transform.position) <= pickupRange) {
+        //    isLooted = true;
+        //    playerMovement.LootSoldier();
+        //}
+        CheckPlayerDistance();
+
+        if (playerInRange) {
+            UpdatePickUpHint();
+        }
+    }
+
+    void CheckPlayerDistance() {
+        playerInRange = Mathf.Abs(Vector3.Distance(playerTransfrom.position, transform.position)) <= MaxDistance;
+    }
+
+    void UpdatePickUpHint() {
+        float distance = Mathf.Abs(Vector3.Distance(Player.transform.position, transform.position));
+        if (distance <= MaxDistance - 0.1f) {
+            string uiText = "";
+
+            // Handle pickup/drop display
+            if (isPickedUp) {
+                uiText = "E : Drop Body";
             }
-            else if (playerMovement.isCarrying == false && Vector3.Distance(playerTransfrom.position, transform.position) <= pickupRange && Time.time >= playerMovement.nextPickupTime) {
-                playerMovement.SetCarrying(true);
-                AttachBody();
+            else if (!playerMovement.isCarrying && Time.time >= playerMovement.nextPickupTime) {
+                uiText = "E : Pick up Body";
+                if (!isLooted && !playerMovement.isCarrying) {
+                    uiText += "\nC : Loot Body";
+                }
+            }
+
+            playerUIManager.ActionUIText(uiText);
+
+            // Handle pickup/drop input
+            if (inputManager.interactInput) {
+                if (isPickedUp) {
+                    DetachBody();
+                    playerMovement.SetCarrying(false);
+                    if (!isLooted) {
+                        uiText = "E : Pick up Body\nC : Loot Body";
+                    }
+                    else {
+                        uiText = "E : Pick up Body";
+                    }
+                    playerUIManager.ActionUIText(uiText);
+                }
+                else if (!playerMovement.isCarrying && Time.time >= playerMovement.nextPickupTime) {
+                    playerMovement.SetCarrying(true);
+                    AttachBody();
+                    playerUIManager.ActionUIText("E : Drop Body");
+                }
+            }
+
+            // Handle loot input
+            if (inputManager.lootInput && !isPickedUp && !isLooted && !playerMovement.isCarrying) {
+                isLooted = true;
+                playerMovement.LootSoldier();
+                // Update UI text to show only pickup option after looting
+                playerUIManager.ActionUIText("E : Pick up Body");
             }
         }
-
-        if (inputManager.lootInput == true && isPickedUp == false && isLooted == false && Vector3.Distance(playerTransfrom.position, transform.position) <= pickupRange) {
-            isLooted = true;
-            playerMovement.LootSoldier();
+        else {
+            playerUIManager.ActionUIText("");
         }
     }
 
