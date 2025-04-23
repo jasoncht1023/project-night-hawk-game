@@ -8,11 +8,23 @@ public class MainMenuScene : MonoBehaviour
 {
     public void PlayGame()
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+        SceneManager.LoadScene("ChapterMenu");
     }
 
     public void QuitGame()
     {
         Application.Quit();
     }
+
+    public void Chapter1()
+    {
+        SceneManager.LoadScene("Chapter1");
+    }
+
+    public void Chapter2()
+    {
+        SceneManager.LoadScene("Chapter2");
+    }
+
+
 }
