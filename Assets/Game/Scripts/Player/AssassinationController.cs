@@ -22,10 +22,13 @@ public class AssassinationController : MonoBehaviour {
     private bool wasPistolActive = false;
     private bool isAssassinating = false;
 
+    private PlayerUIManager playerUIManager;
+
     private void Awake() {
         inputManager = GetComponent<InputManager>();
         playerAnimator = GetComponent<Animator>();
         soundAudioSource = GetComponent<AudioSource>();
+        playerUIManager = FindFirstObjectByType<PlayerUIManager>();
 
         // Make sure knife is hidden initially
         if (m9Knife != null) {
@@ -69,7 +72,16 @@ public class AssassinationController : MonoBehaviour {
                 }
             }
         }
+        if (canAssassinate && targetSoldier != null) {
+
+            playerUIManager.ActionUIText("F : Assassinate");
+
+        }
+        else {
+            playerUIManager.ActionUIText("");
+        }
     }
+
 
     private void HandleAssassination() {
         if (canAssassinate && inputManager.assassinateInput && !isAssassinating) {

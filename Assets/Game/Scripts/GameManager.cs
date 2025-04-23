@@ -1,3 +1,4 @@
+using SunTemple;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour {
@@ -28,6 +29,8 @@ public class GameManager : MonoBehaviour {
 
     GameObject player;
 
+    private CursorManager cursor;
+
     private void Start() {
         inputManager = FindFirstObjectByType<InputManager>();
         firingController = GetComponent<FiringController>();
@@ -35,6 +38,7 @@ public class GameManager : MonoBehaviour {
         playerAudioSource = GetComponent<AudioSource>();
         pistol.SetActive(false);
         firingController.enabled = false;
+        cursor = CursorManager.instance;
     }
 
     private void Update() {
@@ -57,6 +61,13 @@ public class GameManager : MonoBehaviour {
         }
         else {
             animator.SetBool(scopeAnimationBool, false);
+        }
+
+        if (pistol.activeSelf == true) {
+            cursor.SetCursorToCrosshair();
+        }
+        else {
+            cursor.SetCursorToDefault();
         }
 
         PingSoldierWithFootstep();
