@@ -8,7 +8,7 @@ public class CutsceneTrigger : MonoBehaviour {
 
     PlayableDirector cutscene;
     public GameObject cutsceneObjects;
-    private bool hasTriggered = false;
+    public bool hasTriggered = false;
 
     public GameObject player;
     public GameObject soldiers;
@@ -17,25 +17,35 @@ public class CutsceneTrigger : MonoBehaviour {
     void OnTriggerEnter(Collider entryCollider) {
         playerCamera = GameObject.FindGameObjectWithTag("MainCamera");
         if (entryCollider.CompareTag("Player") && !hasTriggered) {          // Check if the object entering the trigger is the player
-            cutscene = cutsceneCamera.GetComponent<PlayableDirector>();
-            if (cutscene != null) {
-                cutsceneObjects.SetActive(true);
-                player.SetActive(false);
-                soldiers.SetActive(false);
-                playerCanvas.SetActive(false);
+            Debug.Log("Player entered cutscene trigger");
+            hasTriggered = true; // Set the flag to true to prevent re-triggering
+            Time.timeScale = 0; // Pause the game
+            triggerCutscene(); // Call the method to trigger the cutscene
+        }
+        else {
+            Debug.Log("Collider is not the player or cutscene has already been triggered");
+        }
+    }
 
-                playerCamera.SetActive(false);
-                cutsceneCamera.SetActive(true);
+    public void triggerCutscene() {
+        cutscene = cutsceneCamera.GetComponent<PlayableDirector>();
+        if (cutscene != null) {
+            Debug.Log("Cutscene found");
+            cutsceneObjects.SetActive(true);
+            player.SetActive(false);
+            soldiers.SetActive(false);
+            playerCanvas.SetActive(false);
 
-                cutscene.Play();    
-                cutscene.stopped += OnCutsceneStopped;
-                hasTriggered = true;    
-            }
+            playerCamera.SetActive(false);
+            cutsceneCamera.SetActive(true);
+
+            cutscene.Play();
+            cutscene.stopped += OnCutsceneStopped;
         }
     }
 
     private void OnCutsceneStopped(PlayableDirector director) {
-        Time.timeScale = 0;         
-        cutscene.stopped -= OnCutsceneStopped; 
+        Time.timeScale = 0;
+        cutscene.stopped -= OnCutsceneStopped;
     }
 }

@@ -35,6 +35,9 @@ public class InputManager : MonoBehaviour {
     public bool assassinateInput;
     public bool lootInput;
 
+    [Header("Pause Flag")]
+    public bool isPaused = false;
+
     private void Awake() {
         animatorManager = GetComponent<AnimatorManager>();
         playerMovement = GetComponent<PlayerMovement>();
@@ -70,8 +73,8 @@ public class InputManager : MonoBehaviour {
     }
 
     public void HandleAllInputs() {
-        HandleMovementInput();;
         HandlePauseGameInput();
+        HandleMovementInput(); ;
         StartCoroutine(HandleInteractInput());
         StartCoroutine(HandleLootInput());
     }
@@ -80,17 +83,23 @@ public class InputManager : MonoBehaviour {
         verticalInput = movementInput.y;
         horizontalInput = movementInput.x;
 
-        cameraInputX = cameraInput.x;
-        cameraInputY = cameraInput.y;
+        if (isPaused) {
+            cameraInputX = 0;
+            cameraInputY = 0;
+        }
+        else {
+            cameraInputX = cameraInput.x;
+            cameraInputY = cameraInput.y;
+        }
 
         moveAmount = Mathf.Clamp01(Mathf.Abs(horizontalInput) + Mathf.Abs(verticalInput));
         animatorManager.UpdateAnimationValues(horizontalInput, verticalInput, playerMovement.isRunning);
     }
 
     private void HandlePauseGameInput() {
-        if (pauseGameInput == true) {
-            pauseGameInput = false;
-        }
+        // if (pauseGameInput == true) {
+        //     pauseGameInput = false;
+        // }
     }
 
     public void SwitchWeaponDone() {

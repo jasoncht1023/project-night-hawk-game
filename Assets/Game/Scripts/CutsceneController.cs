@@ -10,8 +10,8 @@ public class CutsceneController : MonoBehaviour {
     public InputManager inputManager;
 
     public GameObject playerCanvas;
-    
-    private Animator introCameraAnimator;
+
+    public Animator introCameraAnimator;
 
     private bool introCameraFinished = false;
 
