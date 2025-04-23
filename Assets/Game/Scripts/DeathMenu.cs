@@ -1,12 +1,11 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI; // For UI effects like blur
-using UnityEngine.Playables; // For handling cutscenes
+using UnityEngine.Playables;
+using System; // For handling cutscenes
 
 public class DeathMenu : MonoBehaviour {
     InputManager inputManager;
-    CutsceneTrigger cutsceneTrigger;
-    CutsceneController cutsceneController;
     public GameObject deathMenuUI; // Assign the death menu panel in the Inspector
     public string mainMenuSceneName = "MainMenuScene"; // Set the name of your main menu scene
 
@@ -14,11 +13,10 @@ public class DeathMenu : MonoBehaviour {
     public Image blurOverlay; // Reference to an Image component for blurring the background
 
     private PlayerMovement playerMovement;
+    private bool hasShownDeathMenu = false;
 
     void Start() {
         inputManager = FindFirstObjectByType<InputManager>();
-        cutsceneTrigger = FindFirstObjectByType<CutsceneTrigger>();
-        cutsceneController = FindFirstObjectByType<CutsceneController>();
         playerMovement = FindFirstObjectByType<PlayerMovement>();
 
         // Ensure the death menu is hidden at the start
@@ -30,14 +28,16 @@ public class DeathMenu : MonoBehaviour {
         }
     }
 
-    void Update() {
+    void LateUpdate() {
         // Check player health only if player is not already dead
-        if (playerMovement != null && playerMovement.currentHealth <= 0) {
+        if (playerMovement != null && playerMovement.currentHealth <= 0 && !hasShownDeathMenu) {
+            hasShownDeathMenu = true;
+            print("Player is dead");
             ShowDeathMenu();
         }
     }
 
-    void ShowDeathMenu() {
+    public void ShowDeathMenu() {
         if (deathMenuUI != null) {
             deathMenuUI.SetActive(true);
 
@@ -58,19 +58,10 @@ public class DeathMenu : MonoBehaviour {
     public void RestartLevel() {
         // Reset time scale before reloading the scene
         Time.timeScale = 1f;
-        inputManager.isPaused = false;
 
         // Reload the current scene
         Scene currentScene = SceneManager.GetActiveScene();
         SceneManager.LoadScene(currentScene.name);
-        if (currentScene.name == "Chapter1") {
-            cutsceneTrigger.triggerCutscene();
-        }
-        // chapter2 cutscene does not play automatically and i dont know why
-        else {
-        }
-
-        Debug.Log("Restarting level: " + currentScene.name);
     }
 
     public void ExitToMainMenu() {
