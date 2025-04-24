@@ -4,25 +4,20 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 
 
-public class MainMenuScene : MonoBehaviour
-{
-    public void PlayGame()
-    {
+public class MainMenuScene : MonoBehaviour {
+    public void PlayGame() {
         SceneManager.LoadScene("ChapterMenu");
     }
 
-    public void QuitGame()
-    {
+    public void QuitGame() {
         Application.Quit();
     }
 
-    public void Chapter1()
-    {
-        SceneManager.LoadScene("Chapter1");
+    public void Chapter1() {
+        SceneManager.LoadScene("Chapter1Video");
     }
 
-    public void Chapter2()
-    {
+    public void Chapter2() {
         SceneManager.LoadScene("Chapter2");
     }
 
