@@ -18,7 +18,7 @@ public class MainMenuScene : MonoBehaviour {
     }
 
     public void Chapter2() {
-        SceneManager.LoadScene("Chapter2");
+        SceneManager.LoadScene("Chapter2Video");
     }
 
 

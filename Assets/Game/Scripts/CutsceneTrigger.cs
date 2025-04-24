@@ -39,6 +39,6 @@ public class CutsceneTrigger : MonoBehaviour {
         Debug.Log("Cutscene stopped");
         Time.timeScale = 1f;
         cutscene.stopped -= OnCutsceneStopped;
-        SceneManager.LoadScene("Chapter2");
+        SceneManager.LoadScene("Chapter2Video");
     }
 }

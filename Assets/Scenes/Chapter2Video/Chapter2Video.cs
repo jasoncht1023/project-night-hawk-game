@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.Video;
 
-public class Chapter1Video : MonoBehaviour {
+public class Chapter2Video : MonoBehaviour {
     VideoPlayer videoPlayer;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start() {
@@ -18,6 +18,6 @@ public class Chapter1Video : MonoBehaviour {
 
     public void EndReached(UnityEngine.Video.VideoPlayer vp) {
         Debug.Log("End of video reached");
-        SceneManager.LoadScene("Chapter1");
+        SceneManager.LoadScene("Chapter2");
     }
 }
