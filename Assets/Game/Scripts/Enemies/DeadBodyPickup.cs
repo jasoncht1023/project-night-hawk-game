@@ -27,7 +27,7 @@ public class DeadBodyPickup : MonoBehaviour {
 
     private void Start() {
         agent = GetComponent<NavMeshAgent>();
-        GameObject playerObject = GameObject.Find("Player");
+        GameObject playerObject = GameObject.FindGameObjectWithTag(playerTag);
         playerTransfrom = playerObject.transform;
         inputManager = playerObject.GetComponent<InputManager>();
         playerMovement = playerObject.GetComponent<PlayerMovement>();

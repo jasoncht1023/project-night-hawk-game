@@ -14,11 +14,11 @@ public class MainMenuScene : MonoBehaviour {
     }
 
     public void Chapter1() {
-        SceneManager.LoadScene("Chapter1Video");
+        SceneManager.LoadScene("IntroVideo");
     }
 
     public void Chapter2() {
-        SceneManager.LoadScene("Chapter2Video");
+        SceneManager.LoadScene("TransitionVideo");
     }
 
 

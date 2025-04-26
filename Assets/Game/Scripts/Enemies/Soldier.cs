@@ -85,7 +85,7 @@ public class Soldier : MonoBehaviour {
     private void Start() {
         currentMovingSpeed = walkingSpeed;
         currentHealth = characterHealth;
-        playerBody = GameObject.Find("Player");
+        playerBody = GameObject.FindGameObjectWithTag("Player");
         deadBodyPickup = GetComponent<DeadBodyPickup>();
         deadBodyPickup.enabled = false;                     // Disable picking up soldiers when they are alive
         enemyUIManager = GetComponent<EnemyUIManager>();
