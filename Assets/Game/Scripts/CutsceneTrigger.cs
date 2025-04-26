@@ -9,7 +9,7 @@ public class CutsceneTrigger : MonoBehaviour {
 
     PlayableDirector cutscene;
     public GameObject cutsceneObjects;
-    public bool hasTriggered = false;
+    private bool hasTriggered = false;
 
     public GameObject player;
     public GameObject soldiers;
@@ -39,6 +39,12 @@ public class CutsceneTrigger : MonoBehaviour {
         Debug.Log("Cutscene stopped");
         Time.timeScale = 1f;
         cutscene.stopped -= OnCutsceneStopped;
-        SceneManager.LoadScene("Chapter2Video");
+
+        if (SceneManager.GetActiveScene().name == "Chapter1") {
+            SceneManager.LoadScene("TransitionVideo");
+        }
+        else {
+            SceneManager.LoadScene("EndingVideo");
+        }
     }
 }

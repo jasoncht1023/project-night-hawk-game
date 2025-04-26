@@ -6,7 +6,6 @@ TagManager:
   tags:
   - PlayerCarryDeadbodyPosition
   - MinimapCamera
-  - MinimapPlayer
   layers:
   - Default
   - TransparentFX

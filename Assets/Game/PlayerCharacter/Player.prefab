@@ -1358,7 +1358,7 @@ GameObject:
   - component: {fileID: 6156641411233732817}
   m_Layer: 3
   m_Name: Player
-  m_TagString: MinimapPlayer
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1431,6 +1431,7 @@ MonoBehaviour:
   crouchInput: 0
   assassinateInput: 0
   lootInput: 0
+  isPaused: 0
 --- !u!114 &8728078391919432364
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1534,6 +1535,9 @@ MonoBehaviour:
   currentMagazineText: {fileID: 0}
   totalAmmoText: {fileID: 0}
   weaponSelectionBorderImage: {fileID: 0}
+  ActionText: {fileID: 0}
+  QuestTitle: {fileID: 0}
+  QuestObjectives: {fileID: 0}
 --- !u!54 &7170486391380491444
 Rigidbody:
   m_ObjectHideFlags: 0
