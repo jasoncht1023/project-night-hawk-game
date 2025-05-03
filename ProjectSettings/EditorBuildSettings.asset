@@ -26,6 +26,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/TransitionVideo.unity
     guid: 642d045717b514295a71a6f6eef5777b
+  - enabled: 1
+    path: Assets/Scenes/EndingVideo.unity
+    guid: f95047a729fc1409c9bfd01c0c5f307b
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 289c1b55c9541489481df5cc06664110, type: 3}
   m_UseUCBPForAssetBundles: 0

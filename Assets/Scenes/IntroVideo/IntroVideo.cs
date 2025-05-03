@@ -6,6 +6,10 @@ public class IntroVideo : MonoBehaviour {
     VideoPlayer videoPlayer;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start() {
+        // set cursor to default
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+
         videoPlayer = GetComponent<VideoPlayer>();
         Debug.Log("Video Player component found: " + videoPlayer);
         videoPlayer.loopPointReached += EndReached;
