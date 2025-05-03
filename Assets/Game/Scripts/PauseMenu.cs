@@ -1,17 +1,16 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.InputSystem; // Assuming you might use the new Input System
+using UnityEngine.InputSystem;
 
 public class PauseMenu : MonoBehaviour {
     InputManager inputManager;
 
-    public GameObject pauseMenuUI; // Assign the pause menu panel in the Inspector
-    public string mainMenuSceneName = "MainMenuScene"; // Set the name of your main menu scene
+    public GameObject pauseMenuUI;
+    public string mainMenuSceneName = "MainMenuScene";
 
     void Start() {
         inputManager = FindFirstObjectByType<InputManager>();
 
-        // Ensure the pause menu is hidden at the start
         if (pauseMenuUI != null) {
             pauseMenuUI.SetActive(false);
 
@@ -19,13 +18,9 @@ public class PauseMenu : MonoBehaviour {
         else {
             Debug.LogError("Pause Menu UI Panel is not assigned in the Inspector!");
         }
-
-        // Optional: Get PlayerInput if needed for disabling actions
-        // playerInput = FindObjectOfType<PlayerInput>();
     }
 
     void Update() {
-        // Using old Input Manager for simplicity, adjust if using new Input System's actions
         if (inputManager.pauseGameInput) {
             inputManager.pauseGameInput = false;
             if (inputManager.isPaused) {
@@ -41,12 +36,10 @@ public class PauseMenu : MonoBehaviour {
         if (pauseMenuUI != null) {
             pauseMenuUI.SetActive(false);
         }
-        Time.timeScale = 1f; // Resume time
+        Time.timeScale = 1f;
         inputManager.isPaused = false;
-        // Optional: Re-enable player input if disabled during pause
-        // if (playerInput != null) playerInput.ActivateInput();
-        Cursor.lockState = CursorLockMode.Locked; // Lock cursor again for gameplay
-        Cursor.visible = false; // Hide cursor
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
         Debug.Log("Game Resumed");
     }
 
@@ -54,17 +47,15 @@ public class PauseMenu : MonoBehaviour {
         if (pauseMenuUI != null) {
             pauseMenuUI.SetActive(true);
         }
-        Time.timeScale = 0f; // Freeze time
+        Time.timeScale = 0f;
         inputManager.isPaused = true;
-        // Optional: Disable player input actions if needed
-        // if (playerInput != null) playerInput.DeactivateInput();
-        Cursor.lockState = CursorLockMode.None; // Unlock cursor
-        Cursor.visible = true; // Show cursor for UI interaction
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
         Debug.Log("Game Paused");
     }
 
     public void LoadMainMenu() {
-        Time.timeScale = 1f; // Ensure time scale is reset before leaving the scene
+        Time.timeScale = 1f;
         SceneManager.LoadScene(mainMenuSceneName);
         Debug.Log("Loading Main Menu...");
     }

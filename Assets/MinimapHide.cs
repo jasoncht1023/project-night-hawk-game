@@ -2,7 +2,6 @@ using UnityEngine;
 
 public class CameraMinimapHide : MonoBehaviour {
     private Camera cam;
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start() {
         cam = GetComponent<Camera>();
         if (cam == null) {
@@ -10,6 +9,6 @@ public class CameraMinimapHide : MonoBehaviour {
             return;
         }
         LayerMask mask = LayerMask.GetMask("MinimapLayer");
-        cam.cullingMask &= ~mask; // Hide the MinimapLayer from this camera
+        cam.cullingMask &= ~mask;
     }
 }
