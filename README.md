@@ -1,6 +1,7 @@
 # Project Night Hawk
-[Game trailer](https://www.facebook.com/share/v/1DtzfJZ49j/) <br>
-[Game build download (Windows/macOS)](https://connecthkuhk-my.sharepoint.com/personal/cwhei_connect_hku_hk/_layouts/15/onedrive.aspx?id=%2Fpersonal%2Fcwhei%5Fconnect%5Fhku%5Fhk%2FDocuments%2FYear%204%2FCOMP3329%2FGroup%2027%20Game%20Build&ga=1)
+[Game Trailer](https://www.facebook.com/share/v/1DtzfJZ49j/) <br>
+[Game Build Zip Download (Windows) [Recommended]](https://drive.google.com/file/d/1eGEy2cxFCULaXifLFycNFiOqzTMwvaqT/view?usp=sharing) <br>
+[Game Build Zip Download (macOS)](https://drive.google.com/file/d/153n4nDhn5ooySnIHgOt2h263oDFrP8Ho/view?usp=sharing)
 
 Project Night Hawk is a stealth-driven third-person shooter set in the period of
 World War II. The game emphasizes strategy over brute force, rewarding careful planning and precise
@@ -22,7 +23,7 @@ The player wields two weapons. A silenced pistol which kills enemy with 1 headsh
 body shots, and a knife that delivers one-hit kills for stealth takedowns when being unnoticed. 
 Player movement (walking/running) will be heard by nearby soldiers and crouching
 silences all the footsteps. The objective is to eliminate the key target revealed in the story to
-win. If the player’s health points reach zero, the game ends.
+win. The objective will be pointed with yellow arrow in the mini-map. If the player’s health points reach zero, the game ends.
 
 Enemy soldiers have five major states.
 1. Default: Soldiers patrol between predefined waypoints or stay in fixed position.
